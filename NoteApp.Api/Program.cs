@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using NoteApp.Api;
 using NoteApp.Api.Models;
 using NoteApp.Api.Services;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +26,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+//Adiciona suporte a autorização e cria uma política de acesso
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("admin", options => options.RequireRole("admin"));
+});
 
 var app = builder.Build();
 app.UseAuthentication();
@@ -33,9 +39,11 @@ app.UseAuthorization();
 
 app.MapGet("/login", ([FromServices]TokenService service) => 
 {
-    var roles = new List<string>();
-    roles.Add("default");
-    roles.Add("admin");
+    var roles = new List<string>
+    {
+        "default",
+        "admin"
+    };
     var user = new User
     {
         Name = "Lucas",
@@ -49,9 +57,13 @@ app.MapGet("/login", ([FromServices]TokenService service) =>
     return service.Create(user);
 });
 
-app.MapGet("/restrito", () =>
+app.MapGet("/restrito", (ClaimsPrincipal user) =>
 {
-    return "Autorizado!";
-}).RequireAuthorization();
+    //Busca no objeto uma claim do tipo especificado
+    var id = user.Claims.FirstOrDefault(x => x.Type == "id").Value ?? "0";
+    
+    return $"Autorizado! id = {id}";
+    
+}).RequireAuthorization("admin");
 
 app.Run();
