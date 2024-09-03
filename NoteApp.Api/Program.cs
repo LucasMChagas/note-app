@@ -36,7 +36,6 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.MapGet("/login", ([FromServices]TokenService service) => 
 {
     var roles = new List<string>
