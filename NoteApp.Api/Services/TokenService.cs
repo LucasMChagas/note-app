@@ -12,7 +12,7 @@ public class TokenService
     {
         var handler = new JwtSecurityTokenHandler();
 
-        var key = Encoding.ASCII.GetBytes(Configuration.PrivateKey);        
+        var key = Encoding.ASCII.GetBytes(Configuration.Secrets.JwtPrivateKey);        
 
         var credentials = new SigningCredentials(
             new SymmetricSecurityKey(key), 

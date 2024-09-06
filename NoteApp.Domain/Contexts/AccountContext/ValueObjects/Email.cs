@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using NoteApp.Domain.Contexts.AccountContext.ValueObjects;
 using NoteApp.Domain.SharedContext.Extensions;
 using NoteApp.Domain.SharedContext.ValueObjects;
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NoteApp.Domain.AccountContext.Entities;
-using NoteApp.Infra.AccountContext.Mappings;
+using NoteApp.Domain.Contexts.AccountContext.Entities;
+using NoteApp.Infra.Contexts.AccountContext.Mappings;
 
 namespace NoteApp.Infra.Data;
 

@@ -1,13 +1,14 @@
 ﻿using NoteApp.Domain.AccountContext.ValueObjects;
+using NoteApp.Domain.Contexts.AccountContext.ValueObjects;
 using NoteApp.Domain.SharedContext.Entities;
 
-namespace NoteApp.Domain.AccountContext.Entities;
+namespace NoteApp.Domain.Contexts.AccountContext.Entities;
 
 public class User : Entity
 {
     protected User()
     {
-        
+
     }
     public User(string email, string? password = null)
     {
@@ -16,7 +17,7 @@ public class User : Entity
     }
     public string Name { get; private set; } = string.Empty;
     public Email Email { get; private set; } = null!;
-    public Password Password { get; private set; } =null!;
+    public Password Password { get; private set; } = null!;
     public string Image { get; private set; } = string.Empty;
     public List<Note> Notes { get; set; } = [];
 

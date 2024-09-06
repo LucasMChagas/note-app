@@ -1,38 +1,19 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using NoteApp.Api;
+using NoteApp.Api.Extensions;
 using NoteApp.Api.Models;
 using NoteApp.Api.Services;
 using System.Security.Claims;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddTransient<TokenService>();
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;    
-}).AddJwtBearer(jwtBearerOptions =>
-{
-    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
-    {
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.PrivateKey)),
-        ValidateIssuer = false,
-        ValidateAudience = false
-    };
-});
-
-//Adiciona suporte a autorização e cria uma política de acesso
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("admin", options => options.RequireRole("admin"));
-});
+builder.AddConfiguration();
+builder.AddDatabase();
+builder.AddJwtAuthentication();
+builder.AddServices();
 
 var app = builder.Build();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 

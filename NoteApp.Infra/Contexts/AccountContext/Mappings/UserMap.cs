@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NoteApp.Domain.AccountContext.Entities;
+using NoteApp.Domain.Contexts.AccountContext.Entities;
 
-namespace NoteApp.Infra.AccountContext.Mappings;
+namespace NoteApp.Infra.Contexts.AccountContext.Mappings;
 public class UserMap : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
@@ -66,5 +66,5 @@ public class UserMap : IEntityTypeConfiguration<User>
             .WithOne(n => n.User)
             .HasForeignKey(n => n.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-    }    
+    }
 }
