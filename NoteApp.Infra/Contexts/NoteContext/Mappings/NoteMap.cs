@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NoteApp.Domain.Contexts.AccountContext.Entities;
+using NoteApp.Domain.Contexts.NoteContext.Entities;
 
-namespace NoteApp.Infra.Contexts.AccountContext.Mappings;
+namespace NoteApp.Infra.Contexts.NoteContext.Mappings;
 
 public class NoteMap : IEntityTypeConfiguration<Note>
 {
@@ -30,7 +30,7 @@ public class NoteMap : IEntityTypeConfiguration<Note>
             .HasColumnType("DATETIME2")
             .IsRequired();
 
-        builder.Property(x => x.CreatedAt)
+        builder.Property(x => x.UpdatedAt)
             .HasColumnName("UpdatedAt")
             .HasColumnType("DATETIME2");
     }
