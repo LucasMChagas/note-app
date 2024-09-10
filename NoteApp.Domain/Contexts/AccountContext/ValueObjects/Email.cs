@@ -10,7 +10,7 @@ public partial class Email : ValueObject
     private const string Pattern = @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
 
     protected Email()
-    {
+    {        
     }
 
     public Email(string address)
@@ -26,7 +26,7 @@ public partial class Email : ValueObject
         if (!EmailRegex().IsMatch(Address))
             throw new Exception("E-mail inválido");
     }
-    public string Address { get; }
+    public string Address { get; } = string.Empty;
     public string Hash => Address.ToBase64();
     public Verification Verification { get; private set; } = new();
 

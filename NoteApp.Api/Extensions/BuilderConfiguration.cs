@@ -12,7 +12,7 @@ public static class BuilderConfiguration
     public static void AddConfiguration(this WebApplicationBuilder builder)
     {
         Configuration.Database.ConnectionString =
-            builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+        builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
 
         Configuration.Secrets.JwtPrivateKey = 
             builder.Configuration.GetSection("Secrets").GetValue<string>("JwtPrivateKey") ?? string.Empty;
@@ -22,8 +22,8 @@ public static class BuilderConfiguration
     {
         builder.Services.AddDbContext<AppDbContext>(options => 
             options.UseSqlServer(
-                Configuration.Database.ConnectionString,
-                optionsBuilder => optionsBuilder.MigrationsAssembly("NoteApp.Api")));
+                Configuration.Database.ConnectionString
+                /*, optionsBuilder => optionsBuilder.MigrationsAssembly("NoteApp.Api")*/));
     }
 
     public static void AddJwtAuthentication(this WebApplicationBuilder builder)

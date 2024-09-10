@@ -1,5 +1,6 @@
 ﻿using NoteApp.Domain.AccountContext.ValueObjects;
 using NoteApp.Domain.Contexts.AccountContext.ValueObjects;
+using NoteApp.Domain.Contexts.NoteContext.Entities;
 using NoteApp.Domain.SharedContext.Entities;
 
 namespace NoteApp.Domain.Contexts.AccountContext.Entities;
@@ -10,10 +11,11 @@ public class User : Entity
     {
 
     }
-    public User(string email, string? password = null)
+    public User(string name, Email email, Password password)
     {
+        Name = name;
         Email = email;
-        Password = new Password(password);
+        Password = password;
     }
     public string Name { get; private set; } = string.Empty;
     public Email Email { get; private set; } = null!;

@@ -1,6 +1,7 @@
-﻿using NoteApp.Domain.SharedContext.Entities;
+﻿using NoteApp.Domain.Contexts.AccountContext.Entities;
+using NoteApp.Domain.SharedContext.Entities;
 
-namespace NoteApp.Domain.Contexts.AccountContext.Entities;
+namespace NoteApp.Domain.Contexts.NoteContext.Entities;
 
 public class Note : Entity
 {

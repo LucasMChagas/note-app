@@ -1,5 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using NoteApp.Api.Models;
+using NoteApp.Domain.Contexts.AccountContext.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -34,15 +34,15 @@ public class TokenService
         var claimsIdentity = new ClaimsIdentity();
 
         claimsIdentity.AddClaim(new Claim("id", user.Id.ToString()));
-        claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+        claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.Email));
         claimsIdentity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
         claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, user.Name));
         claimsIdentity.AddClaim(new Claim("image", user.Image));
 
-        foreach (var role in user.Roles)
-        {
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
-        }
+        //foreach (var role in user.Roles)
+        //{
+        //    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
+        //}
 
         return claimsIdentity;
     }
