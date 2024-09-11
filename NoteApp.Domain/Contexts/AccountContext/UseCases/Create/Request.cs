@@ -1,8 +1,8 @@
-﻿using NoteApp.Domain.AccountContext.ValueObjects;
+﻿using MediatR;
 
 namespace NoteApp.Domain.Contexts.AccountContext.UseCases.Create;
 
-public class Request
+public class Request : IRequest<Response>
 {
     public Request()
     {

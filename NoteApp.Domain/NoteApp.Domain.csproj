@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Flunt" Version="2.0.5" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="SecureIdentity" Version="1.0.4" />
   </ItemGroup>
 

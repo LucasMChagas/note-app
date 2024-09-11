@@ -1,11 +1,12 @@
-﻿using NoteApp.Domain.AccountContext.ValueObjects;
+﻿using MediatR;
+using NoteApp.Domain.AccountContext.ValueObjects;
 using NoteApp.Domain.Contexts.AccountContext.Entities;
 using NoteApp.Domain.Contexts.AccountContext.UseCases.Create.Contracts;
 using NoteApp.Domain.Contexts.AccountContext.ValueObjects;
 
 namespace NoteApp.Domain.Contexts.AccountContext.UseCases.Create;
 
-public class Handler
+public class Handler : IRequestHandler<Request, Response>
 {
     private readonly IRepository _repository;
     private readonly IService _service;
