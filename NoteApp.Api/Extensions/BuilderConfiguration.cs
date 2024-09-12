@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NoteApp.Api.Services;
+using NoteApp.Domain;
 using NoteApp.Infra.Data;
 using System.Text;
 
@@ -12,18 +13,26 @@ public static class BuilderConfiguration
     public static void AddConfiguration(this WebApplicationBuilder builder)
     {
         Configuration.Database.ConnectionString =
-        builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+            builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
 
         Configuration.Secrets.JwtPrivateKey = 
             builder.Configuration.GetSection("Secrets").GetValue<string>("JwtPrivateKey") ?? string.Empty;
+
+        Configuration.Email.DefaultFromEmail =
+            builder.Configuration.GetSection("SendEmail").GetValue<string>("DefaultFromEmail") ?? string.Empty;
+
+        Configuration.Email.DefaultFromName =
+            builder.Configuration.GetSection("SendEmail").GetValue<string>("DefaultFromName") ?? string.Empty;
+
+        Configuration.SendGrid.ApiKey =
+            builder.Configuration.GetSection("SendGrid").GetValue<string>("ApiKey") ?? string.Empty;
     }
 
     public static void AddDatabase(this WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<AppDbContext>(options => 
             options.UseSqlServer(
-                Configuration.Database.ConnectionString
-                /*, optionsBuilder => optionsBuilder.MigrationsAssembly("NoteApp.Api")*/));
+                Configuration.Database.ConnectionString));
     }
 
     public static void AddJwtAuthentication(this WebApplicationBuilder builder)
@@ -48,6 +57,12 @@ public static class BuilderConfiguration
         {
             options.AddPolicy("admin", options => options.RequireRole("admin"));
         });
+    }
+
+    public static void AddMediatR(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddMediatR(x
+            => x.RegisterServicesFromAssemblies(typeof(Configuration).Assembly));
     }
 
     public static void AddServices(this WebApplicationBuilder builder)

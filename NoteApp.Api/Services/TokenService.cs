@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using NoteApp.Domain;
 using NoteApp.Domain.Contexts.AccountContext.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
