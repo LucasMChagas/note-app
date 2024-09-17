@@ -66,5 +66,24 @@ public class UserMap : IEntityTypeConfiguration<User>
             .WithOne(n => n.User)
             .HasForeignKey(n => n.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(u => u.Roles)
+            .WithMany(n => n.Users)
+            .UsingEntity<Dictionary<string, object>>(
+                "UserRole",
+
+                role => role
+                .HasOne<Role>()
+                .WithMany()
+                .HasForeignKey("RoleId")
+                .OnDelete(DeleteBehavior.Cascade),
+                
+                user => user
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey("UserId")
+                .OnDelete(DeleteBehavior.Cascade));
+
+
     }
 }

@@ -16,9 +16,12 @@ public class Repository : IRepository
 
     public async Task<User> GetUserByEmail(string email, CancellationToken cancellationToken)
     {
-        return await _context
+        var user = await _context
            .Users
            .AsNoTracking()
-           .FirstOrDefaultAsync(x => x.Email.Address == email, cancellationToken);
+           .Include(x => x.Roles)
+           .FirstOrDefaultAsync(x => x.Email.Address == email, cancellationToken);        
+
+        return user;
     }
 }
