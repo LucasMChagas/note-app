@@ -64,10 +64,4 @@ public static class BuilderConfiguration
         builder.Services.AddMediatR(x
             => x.RegisterServicesFromAssemblies(typeof(Configuration).Assembly));
     }
-
-    public static void AddServices(this WebApplicationBuilder builder)
-    {
-        builder.Services.AddTransient<TokenService>();
-    }
-
 }

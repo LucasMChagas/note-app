@@ -1,15 +1,15 @@
 using NoteApp.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpContextAccessor();
 builder.AddConfiguration();
 builder.AddDatabase();
 builder.AddJwtAuthentication();
-builder.AddServices();
-
 builder.AddAccountContext();
 builder.AddMediatR();
 
 var app = builder.Build();
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

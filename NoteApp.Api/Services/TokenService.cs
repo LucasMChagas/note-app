@@ -1,13 +1,15 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using NoteApp.Domain;
 using NoteApp.Domain.Contexts.AccountContext.Entities;
+using NoteApp.Domain.Contexts.AccountContext.UseCases.Authenticate;
+using NoteApp.Domain.Contexts.AccountContext.UseCases.Authenticate.Contracts;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace NoteApp.Api.Services;
 
-public class TokenService
+public class TokenService : ITokenService
 {
     public string Create(User user)
     {
@@ -34,16 +36,14 @@ public class TokenService
     {
         var claimsIdentity = new ClaimsIdentity();
 
-        claimsIdentity.AddClaim(new Claim("id", user.Id.ToString()));
-        claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.Email));
+        claimsIdentity.AddClaim(new Claim("id", user.Id.ToString()));        
         claimsIdentity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
         claimsIdentity.AddClaim(new Claim(ClaimTypes.GivenName, user.Name));
-        claimsIdentity.AddClaim(new Claim("image", user.Image));
 
-        //foreach (var role in user.Roles)
-        //{
-        //    claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role));
-        //}
+        foreach (var role in user.Roles)
+        {
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Name));
+        }
 
         return claimsIdentity;
     }

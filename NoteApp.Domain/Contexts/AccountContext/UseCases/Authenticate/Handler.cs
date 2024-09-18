@@ -7,10 +7,12 @@ namespace NoteApp.Domain.Contexts.AccountContext.UseCases.Authenticate;
 public class Handler : IRequestHandler<Request, Response>
 {
     private readonly IRepository _repository;
+    private readonly ITokenService _tokenService;
 
-    public Handler(IRepository repository)
+    public Handler(IRepository repository, ITokenService tokenService)
     {
         _repository = repository;
+        _tokenService = tokenService;
     }
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
@@ -76,7 +78,8 @@ public class Handler : IRequestHandler<Request, Response>
                 Id = user.Id.ToString(),
                 Name = user.Name,
                 Email = user.Email,
-                Roles = Array.Empty<string>(),
+                Roles = user.Roles.Select(x => x.Name).ToArray(),
+                Token = _tokenService.Create(user)
             };
             return new Response(string.Empty, data);
         }

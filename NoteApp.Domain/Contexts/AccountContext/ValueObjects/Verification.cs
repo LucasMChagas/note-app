@@ -8,8 +8,8 @@ public class Verification : ValueObject
     {
 
     }
-    public string Code { get; set; } = Guid.NewGuid().ToString("N")[..6].ToUpper();
-    public DateTime? ExpiresAt { get; private set; } = DateTime.UtcNow.AddMinutes(5);
+    public string Code { get; private set; } = Guid.NewGuid().ToString("N")[..6].ToUpper();
+    public DateTime? ExpiresAt { get; private set; } = DateTime.UtcNow.AddMinutes(15);
     public DateTime? VerifiedAt { get; private set; } = null;
     public bool IsActive => VerifiedAt != null && ExpiresAt == null;
 
@@ -26,5 +26,11 @@ public class Verification : ValueObject
 
         ExpiresAt = null;
         VerifiedAt = DateTime.UtcNow;
+    }
+
+    public void NewCode()
+    {
+        Code = Guid.NewGuid().ToString("N")[..6].ToUpper();
+        ExpiresAt = DateTime.UtcNow.AddMinutes(15);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using NoteApp.Domain.AccountContext.ValueObjects;
 using NoteApp.Domain.Contexts.AccountContext.Entities;
 using NoteApp.Domain.Contexts.AccountContext.UseCases.Create.Contracts;
 using NoteApp.Domain.Contexts.AccountContext.ValueObjects;
+using System.Net.Http;
 
 namespace NoteApp.Domain.Contexts.AccountContext.UseCases.Create;
 
@@ -31,8 +33,7 @@ public class Handler : IRequestHandler<Request, Response>
         }
         catch 
         {
-            return new Response("Não foi possível validar a requisição!", 500);
-            throw;
+            return new Response("Não foi possível validar a requisição!", 500);            
         }
 
         #endregion
@@ -88,6 +89,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
+            
             await _service.SendVerificatioEmailAsync(user, cancellationToken);
         }
         catch

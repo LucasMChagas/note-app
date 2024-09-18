@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificando Conta...</title>
+    <script>
+        window.onload = function() {
+            // Pegue os parâmetros da URL (email e código)
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            const code = urlParams.get('code');
+
+            // Se email e code estão presentes, faça a requisição POST
+            if (email && code) {
+                fetch('https://localhost:7172/api/v1/verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        code: code
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Exibir uma mensagem de sucesso
+                        document.getElementById("message").innerText = "Conta verificada com sucesso!";
+                    } else {
+                        // Tratar falhas (ex: código inválido)
+                        document.getElementById("message").innerText = "Falha na verificação da conta.";
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("message").innerText = "Erro de rede.";
+                });
+            } else {
+                document.getElementById("message").innerText = "Parâmetros inválidos.";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Verificação de Conta</h1>
+    <p id="message">Verificando sua conta, por favor, aguarde...</p>
+</body>
+</html>

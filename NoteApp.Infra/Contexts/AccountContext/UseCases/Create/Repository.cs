@@ -26,5 +26,5 @@ public class Repository : IRepository
     {
         await _context.Users.AddAsync(user, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
-    }
+    }      
 }
