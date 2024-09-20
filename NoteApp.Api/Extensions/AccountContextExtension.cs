@@ -87,10 +87,9 @@ public static class AccountContextExtension
         { 
             var result = await handler.Handle(request, new CancellationToken());
 
-            if (!result.IsSuccess)
-                return Results.Json(result, statusCode: result.Status);
-
-            return Results.Ok(result);
+            return result.IsSuccess
+                ? Results.Ok(result)
+                : Results.Json(result, statusCode: result.Status);            
         });
     }
 }
