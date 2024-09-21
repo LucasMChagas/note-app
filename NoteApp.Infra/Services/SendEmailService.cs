@@ -1,19 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
 using NoteApp.Domain;
 using NoteApp.Domain.Contexts.AccountContext.Entities;
-using NoteApp.Domain.Contexts.AccountContext.UseCases.Create.Contracts;
+using NoteApp.Domain.Services;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-namespace NoteApp.Infra.Contexts.AccountContext.UseCases.Create;
-public class Service : IService
+namespace NoteApp.Infra.Services;
+public class SendEmailService : ISendEmailService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public Service(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
+    public SendEmailService(IHttpContextAccessor httpContextAccessor)
+        => _httpContextAccessor = httpContextAccessor;
+
     public async Task SendVerificatioEmailAsync(User user, CancellationToken cancellationToken)
     {
         var client = new SendGridClient(Configuration.SendGrid.ApiKey);
@@ -25,8 +24,8 @@ public class Service : IService
         var content = $"<h3>Conta cadastrada com sucesso!</h3>" +
             $"<a href=\"{request.Scheme}://{request.Host}/index.html" +
             $"?code={user.Email.Verification.Code}&email={user.Email.Address}\">" +
-            $"Ativar a conta</a>";       
-            
+            $"Ativar a conta</a>";
+
         var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
         await client.SendEmailAsync(msg, cancellationToken);
     }

@@ -4,6 +4,7 @@ using NoteApp.Domain.AccountContext.ValueObjects;
 using NoteApp.Domain.Contexts.AccountContext.Entities;
 using NoteApp.Domain.Contexts.AccountContext.UseCases.Create.Contracts;
 using NoteApp.Domain.Contexts.AccountContext.ValueObjects;
+using NoteApp.Domain.Services;
 using System.Net.Http;
 
 namespace NoteApp.Domain.Contexts.AccountContext.UseCases.Create;
@@ -11,9 +12,9 @@ namespace NoteApp.Domain.Contexts.AccountContext.UseCases.Create;
 public class Handler : IRequestHandler<Request, Response>
 {
     private readonly IRepository _repository;
-    private readonly IService _service;
+    private readonly ISendEmailService _service;
 
-    public Handler(IRepository repository, IService service)
+    public Handler(IRepository repository, ISendEmailService service)
     {
         _repository = repository;
         _service = service;

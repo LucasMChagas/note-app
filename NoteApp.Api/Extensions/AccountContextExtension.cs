@@ -1,5 +1,6 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using NoteApp.Domain.Services;
+using NoteApp.Infra.Services;
 using System.Security.Claims;
 
 namespace NoteApp.Api.Extensions;
@@ -14,8 +15,8 @@ public static class AccountContextExtension
             NoteApp.Infra.Contexts.AccountContext.UseCases.Create.Repository>();
         
         builder.Services.AddTransient<
-            NoteApp.Domain.Contexts.AccountContext.UseCases.Create.Contracts.IService,
-            NoteApp.Infra.Contexts.AccountContext.UseCases.Create.Service>();
+            ISendEmailService,
+            SendEmailService>();
         #endregion
 
         #region Authenticate
@@ -32,6 +33,12 @@ public static class AccountContextExtension
         builder.Services.AddTransient<
             NoteApp.Domain.Contexts.AccountContext.UseCases.AccountVerification.Contracts.IRepository,
             NoteApp.Infra.Contexts.AccountContext.UseCases.AccountVerification.Repository>();
+        #endregion
+
+        #region
+        builder.Services.AddTransient<
+            NoteApp.Domain.Contexts.AccountContext.UseCases.SendVerificationCode.Contracts.IRepository,
+            NoteApp.Infra.Contexts.AccountContext.UseCases.SendVerificationCode.Repository>();
         #endregion
     }
 
@@ -90,6 +97,19 @@ public static class AccountContextExtension
             return result.IsSuccess
                 ? Results.Ok(result)
                 : Results.Json(result, statusCode: result.Status);            
+        });
+
+        app.MapPost("api/v1/resend-email-validation", async (
+            NoteApp.Domain.Contexts.AccountContext.UseCases.SendVerificationCode.Request request,
+            IRequestHandler<
+                NoteApp.Domain.Contexts.AccountContext.UseCases.SendVerificationCode.Request,
+                NoteApp.Domain.Contexts.AccountContext.UseCases.SendVerificationCode.Response> handler) =>
+        {
+            var result = await handler.Handle(request, new CancellationToken());
+
+            return result.IsSuccess
+                ? Results.Ok(result)
+                : Results.Json(result, statusCode: result.Status);
         });
     }
 }

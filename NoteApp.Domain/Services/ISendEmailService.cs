@@ -1,8 +1,8 @@
 ﻿using NoteApp.Domain.Contexts.AccountContext.Entities;
 
-namespace NoteApp.Domain.Contexts.AccountContext.UseCases.Create.Contracts;
+namespace NoteApp.Domain.Services;
 
-public interface IService
+public interface ISendEmailService
 {
     Task SendVerificatioEmailAsync(User user, CancellationToken cancellationToken);
 }
