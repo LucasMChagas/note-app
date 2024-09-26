@@ -35,7 +35,7 @@ public static class AccountContextExtension
             NoteApp.Infra.Contexts.AccountContext.UseCases.AccountVerification.Repository>();
         #endregion
 
-        #region
+        #region ResendEmailVerification
         builder.Services.AddTransient<
             NoteApp.Domain.Contexts.AccountContext.UseCases.SendVerificationCode.Contracts.IRepository,
             NoteApp.Infra.Contexts.AccountContext.UseCases.SendVerificationCode.Repository>();

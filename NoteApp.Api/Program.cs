@@ -6,6 +6,7 @@ builder.AddConfiguration();
 builder.AddDatabase();
 builder.AddJwtAuthentication();
 builder.AddAccountContext();
+builder.AddNoteContext();
 builder.AddMediatR();
 
 var app = builder.Build();
@@ -17,5 +18,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseAccountEndpoints();
+app.UseNoteEndpoints();
 
 app.Run();
