@@ -16,7 +16,7 @@ public class Response : SharedContext.UseCases.Response
         Notifications = null;
         Message = message;
     }
-    public ResponseData Data { get; set; }
+    public ResponseData? Data { get; set; }
 }
 
 public record ResponseData(string Title, string Body, string UserId);

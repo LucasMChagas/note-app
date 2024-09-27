@@ -19,6 +19,9 @@ public class Handler : IRequestHandler<Request, Response>
         #region 01.Validar requisição
         try
         {
+            request.Title = request.Title ?? string.Empty;
+            request.Body = request.Body ?? string.Empty;
+
             var res = Validation.Ensure(request);
             if (!res.IsValid)
                 return new Response("Requisição inválida!", 400, res.Notifications);
