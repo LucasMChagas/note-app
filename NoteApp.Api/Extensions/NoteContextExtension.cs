@@ -20,6 +20,12 @@ public static class NoteContextExtension
             NoteApp.Domain.Contexts.NoteContext.UseCases.Delete.Contracts.IRepository,
             NoteApp.Infra.Contexts.NoteContext.UseCases.Delete.Repository>();
         #endregion
+
+        #region Delete
+        builder.Services.AddTransient<
+            NoteApp.Domain.Contexts.NoteContext.UseCases.Update.Contracts.IRepository,
+            NoteApp.Infra.Contexts.NoteContext.UseCases.Update.Repository>();
+        #endregion
     }
 
     public static void UseNoteEndpoints(this WebApplication app)
@@ -70,6 +76,26 @@ public static class NoteContextExtension
                 return Results.BadRequest(
                     new Domain.Contexts.NoteContext.UseCases.Delete.Response(ex.Message, 400));
             }            
+        }).RequireAuthorization();
+        #endregion
+
+        #region Update
+        app.MapPut("api/v1/note/update/{id}", async (
+            ClaimsPrincipal user,
+            [FromRoute] string id,
+            Domain.Contexts.NoteContext.UseCases.Update.Request request,
+            IRequestHandler<
+                Domain.Contexts.NoteContext.UseCases.Update.Request,
+                Domain.Contexts.NoteContext.UseCases.Update.Response> handler) =>
+        {
+            request.UserId = user.Claims.FirstOrDefault(x => x.Type == "id").Value ?? string.Empty;
+            request.NoteId = id ?? string.Empty;
+
+                       
+            var result = await handler.Handle(request, new CancellationToken());
+            return result.IsSuccess
+                ? Results.Ok(result)
+                : Results.Json(result, statusCode: result.Status);            
         }).RequireAuthorization();
         #endregion
     }
