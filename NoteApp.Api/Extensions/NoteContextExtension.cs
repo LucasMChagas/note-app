@@ -26,6 +26,12 @@ public static class NoteContextExtension
             NoteApp.Domain.Contexts.NoteContext.UseCases.Update.Contracts.IRepository,
             NoteApp.Infra.Contexts.NoteContext.UseCases.Update.Repository>();
         #endregion
+
+        #region GetById
+        builder.Services.AddTransient<
+            Domain.Contexts.NoteContext.UseCases.GetById.Contracts.IRepository,
+            Infra.Contexts.NoteContext.UseCases.GetById.Repository>();
+        #endregion
     }
 
     public static void UseNoteEndpoints(this WebApplication app)
@@ -91,11 +97,32 @@ public static class NoteContextExtension
             request.UserId = user.Claims.FirstOrDefault(x => x.Type == "id").Value ?? string.Empty;
             request.NoteId = id ?? string.Empty;
 
-                       
             var result = await handler.Handle(request, new CancellationToken());
             return result.IsSuccess
                 ? Results.Ok(result)
-                : Results.Json(result, statusCode: result.Status);            
+                : Results.Json(result, statusCode: result.Status);
+        }).RequireAuthorization();
+        #endregion
+
+        #region GetById
+        app.MapGet("api/v1/note/{id}", async (
+            ClaimsPrincipal user,
+            [FromRoute] string id,            
+            IRequestHandler<
+                Domain.Contexts.NoteContext.UseCases.GetById.Request,
+                Domain.Contexts.NoteContext.UseCases.GetById.Response> handler) =>
+        {
+            Domain.Contexts.NoteContext.UseCases.GetById.Request request;
+            request = new()
+            {
+                UserId = user.Claims.FirstOrDefault(x => x.Type == "id").Value ?? string.Empty,
+                NoteId = id ?? string.Empty
+            };    
+
+            var result = await handler.Handle(request, new CancellationToken());
+            return result.IsSuccess
+                ? Results.Ok(result)
+                : Results.Json(result, statusCode: result.Status);
         }).RequireAuthorization();
         #endregion
     }

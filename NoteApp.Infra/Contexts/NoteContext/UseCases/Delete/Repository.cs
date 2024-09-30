@@ -28,6 +28,7 @@ public class Repository : IRepository
     {
         var note = await _context
             .Notes
+            .AsNoTracking()
             .FirstOrDefaultAsync(n => n.Id == noteId, cancellationToken);
 
         if(note is null)
