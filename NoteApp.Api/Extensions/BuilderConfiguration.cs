@@ -26,6 +26,12 @@ public static class BuilderConfiguration
 
         Configuration.SendGrid.ApiKey =
             builder.Configuration.GetSection("SendGrid").GetValue<string>("ApiKey") ?? string.Empty;
+
+        Configuration.Pagination.DefaultPageSize =
+            builder.Configuration.GetSection("Pagination").GetValue<int>("DefaultPageSize");
+
+        Configuration.Pagination.DefaultPageNumber =
+            builder.Configuration.GetSection("Pagination").GetValue<int>("DefaultPageNumber");
     }
 
     public static void AddDatabase(this WebApplicationBuilder builder)

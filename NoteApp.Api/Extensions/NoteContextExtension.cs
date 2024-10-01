@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using NoteApp.Domain;
 using NoteApp.Domain.Contexts.AccountContext.Entities;
 using System.Security.Claims;
 
@@ -31,6 +32,12 @@ public static class NoteContextExtension
         builder.Services.AddTransient<
             Domain.Contexts.NoteContext.UseCases.GetById.Contracts.IRepository,
             Infra.Contexts.NoteContext.UseCases.GetById.Repository>();
+        #endregion
+
+        #region GetAll
+        builder.Services.AddTransient<
+            Domain.Contexts.NoteContext.UseCases.GetAll.Contracts.IRepository,
+            Infra.Contexts.NoteContext.UseCases.GetAll.Repository>();
         #endregion
     }
 
@@ -118,6 +125,28 @@ public static class NoteContextExtension
                 UserId = user.Claims.FirstOrDefault(x => x.Type == "id").Value ?? string.Empty,
                 NoteId = id ?? string.Empty
             };    
+
+            var result = await handler.Handle(request, new CancellationToken());
+            return result.IsSuccess
+                ? Results.Ok(result)
+                : Results.Json(result, statusCode: result.Status);
+        }).RequireAuthorization();
+        #endregion
+
+        #region GetAll
+        app.MapGet("api/v1/note/get-all", async (
+            ClaimsPrincipal user,
+            [FromQuery] int page,
+            [FromQuery] int pageSize,
+            IRequestHandler<
+                Domain.Contexts.NoteContext.UseCases.GetAll.Request,
+                Domain.Contexts.NoteContext.UseCases.GetAll.Response> handler) =>
+        {
+            Domain.Contexts.NoteContext.UseCases.GetAll.Request request = new();
+            
+            request.UserId = user.Claims.FirstOrDefault(x => x.Type == "id").Value ?? string.Empty;
+            request.PageNumber = page != 0 ? page : request.PageNumber;
+            request.PageSize = pageSize != 0 ? pageSize : request.PageSize;
 
             var result = await handler.Handle(request, new CancellationToken());
             return result.IsSuccess

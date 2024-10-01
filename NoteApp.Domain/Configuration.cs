@@ -6,7 +6,13 @@ public static class Configuration
     public static DatabaseConfiguration Database { get; set; } = new();
     public static EmailConfiguration Email { get; set; } = new();
     public static SendGridConfiguration SendGrid { get; set; } = new();
+    public static PaginationConfiguration Pagination { get; set; } = new();
 
+    public class PaginationConfiguration
+    {
+        public int DefaultPageNumber { get; set; } 
+        public int DefaultPageSize { get; set; }
+    }
     public class DatabaseConfiguration
     {
         public string ConnectionString { get; set; } = string.Empty;
