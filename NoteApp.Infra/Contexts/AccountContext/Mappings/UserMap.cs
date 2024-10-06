@@ -48,6 +48,16 @@ public class UserMap : IEntityTypeConfiguration<User>
             .HasColumnName("EmailVerificationVerifiedAt")
             .IsRequired(false);
 
+        builder.OwnsOne(t => t.Password)
+           .Ignore(t => t.Notifications);
+
+        builder.OwnsOne(t => t.Email)
+           .Ignore(t => t.Notifications);
+
+        builder.OwnsOne(t => t.Email)
+            .OwnsOne(t => t.Verification)
+            .Ignore(t => t.Notifications);
+
         builder.OwnsOne(t => t.Email)
             .OwnsOne(t => t.Verification)
             .Ignore(t => t.IsActive);

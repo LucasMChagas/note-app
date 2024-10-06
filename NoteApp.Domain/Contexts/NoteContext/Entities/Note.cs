@@ -16,10 +16,17 @@ public class Note : Entity
         UserId = userId;
     }
 
-    public string Title { get; set; } = string.Empty;
-    public string Body { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; set; }
-    public Guid UserId { get; set; }
-    public User User { get; set; } = null!;
+    public string Title { get; private set; } = string.Empty;
+    public string Body { get; private set; } = string.Empty;
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; private set; }
+    public Guid UserId { get; private set; }
+    public User? User { get; private set; } 
+
+    public void Update(string title, string body)
+    {
+        Title = title;
+        Body = body;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }

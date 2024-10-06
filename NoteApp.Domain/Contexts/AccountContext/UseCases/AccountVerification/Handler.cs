@@ -43,6 +43,8 @@ public class Handler : IRequestHandler<Request, Response>
         try
         {
             user.Email.Verification.Verify(request.Code);
+            if (!user.Email.Verification.IsValid)
+                return new Response("Não foi possível ativar a conta", 400, user.Email.Verification.Notifications);
         }
         catch (Exception ex)
         {

@@ -1,4 +1,5 @@
-﻿using NoteApp.Domain.SharedContext.ValueObjects;
+﻿using Flunt.Notifications;
+using NoteApp.Domain.SharedContext.ValueObjects;
 
 namespace NoteApp.Domain.Contexts.AccountContext.ValueObjects;
 
@@ -16,13 +17,22 @@ public class Verification : ValueObject
     public void Verify(string code)
     {
         if (IsActive)
-            throw new Exception("Este item já foi ativado");
+        {
+            AddNotification(new Notification("Ativação", "Este item já foi ativado"));
+            return;
+        }                        
 
         if (ExpiresAt < DateTime.UtcNow)
-            throw new Exception("Este código já expirou");
+        {
+            AddNotification(new Notification("Expiração", "Este código já expirou"));
+            return;
+        }                   
 
         if (!string.Equals(code.Trim(), Code.Trim(), StringComparison.CurrentCultureIgnoreCase))
-            throw new Exception("Código inválido!");
+        {
+            AddNotification(new Notification("Validade", "Código inválido!"));
+            return;
+        }                   
 
         ExpiresAt = null;
         VerifiedAt = DateTime.UtcNow;
@@ -33,4 +43,5 @@ public class Verification : ValueObject
         Code = Guid.NewGuid().ToString("N")[..6].ToUpper();
         ExpiresAt = DateTime.UtcNow.AddMinutes(15);
     }
+    
 }

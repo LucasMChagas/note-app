@@ -24,12 +24,20 @@
                     })
                 })
                 .then(response => {
-                    if (response.ok) {
+                    return response.json(); // Converte a resposta para JSON
+                })
+                .then(response => {
+                    if (response.isSuccess) {
                         // Exibir uma mensagem de sucesso
                         document.getElementById("message").innerText = "Conta verificada com sucesso!";
-                    } else {
+                    } else {                        
+                        let messages = [];
+                        response.notifications.forEach(notification => {                            
+                            messages.push(' ' + notification.message + ' ');                            
+                        });
+                        var element = document.getElementById("message").innerText = response.message + ' :'+ messages;
                         // Tratar falhas (ex: código inválido)
-                        document.getElementById("message").innerText = "Falha na verificação da conta.";
+                        
                     }
                 })
                 .catch(error => {

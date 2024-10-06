@@ -1,5 +1,8 @@
-﻿namespace NoteApp.Domain.SharedContext.ValueObjects;
+﻿using Flunt.Notifications;
 
-public class ValueObject
-{
+namespace NoteApp.Domain.SharedContext.ValueObjects;
+
+public class ValueObject : Notifiable<Notification>
+{   
 }
+

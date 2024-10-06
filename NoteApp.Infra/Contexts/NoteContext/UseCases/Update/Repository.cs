@@ -19,9 +19,7 @@ public class Repository : IRepository
             .FirstOrDefaultAsync(n => n.Id == noteId, cancellationToken)
             ?? throw new Exception("Nota não encontrada!");
 
-        note.Title = title;
-        note.Body = body;
-        note.UpdatedAt = DateTime.UtcNow;
+        note.Update(title, body);      
 
         _context.Notes.Update(note);
         await _context.SaveChangesAsync(cancellationToken);

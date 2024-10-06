@@ -49,7 +49,7 @@ public class Handler : IRequestHandler<Request, Response>
         Note note;
         try
         {
-            note = new(request.Title, request.Body, request.UserId);
+            note = new(request.Title, request.Body, request.UserId);            
         }
         catch (Exception ex)
         {
