@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Flunt.Notifications;
 using NoteApp.Domain.Contexts.AccountContext.ValueObjects;
 using NoteApp.Domain.SharedContext.Extensions;
 using NoteApp.Domain.SharedContext.ValueObjects;
@@ -16,15 +17,15 @@ public partial class Email : ValueObject
     public Email(string address)
     {
         if (string.IsNullOrEmpty(address))
-            throw new Exception("E-mail inválido");
+            AddNotification(new Notification("E-mail","E-mail inválido"));
 
         Address = address.Trim().ToLower();
 
-        if (Address.Length < 5)
-            throw new Exception("E-mail inválido");
+        if (Address.Length <= 10)
+            AddNotification(new Notification("E-mail", "E-mail inválido"));
 
         if (!EmailRegex().IsMatch(Address))
-            throw new Exception("E-mail inválido");
+            AddNotification(new Notification("E-mail", "E-mail inválido"));
     }
     public string Address { get; } = string.Empty;
     public string Hash => Address.ToBase64();
