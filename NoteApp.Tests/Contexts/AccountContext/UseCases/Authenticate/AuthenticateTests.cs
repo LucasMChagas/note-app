@@ -9,6 +9,7 @@ public class AuthenticateTests
 {
     private NoteAppApiApplication? _application;
     private HttpClient? _client;
+    string urlEndpoint;
 
     [TestInitialize]
     public async Task Setup()
@@ -18,16 +19,16 @@ public class AuthenticateTests
         await NoteAppMockData.CreateUsers(_application, true);
 
         _client = _application.CreateClient();
+
+        urlEndpoint = "api/v1/authenticate";
     }
 
     [TestMethod]
     public async Task POSTGivenAnActiveUserAccountWithCorrectCredentialsItShouldReturnStatusCode200()
     {
-        var url = "api/v1/authenticate";
-
         var body = new { email = "lumidach@gmail.com", password = "123456789@" };
 
-        var result = await _client.PostAsJsonAsync(url, body);
+        var result = await _client.PostAsJsonAsync(urlEndpoint, body);
 
         Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
     }
@@ -35,11 +36,9 @@ public class AuthenticateTests
     [TestMethod]
     public async Task POSTGivenAnActiveUserAccountWithIncorrectCredentialsItShouldReturnStatusCode401()
     {
-        var url = "api/v1/authenticate";
-
         var body = new { email = "lumidach@gmail.com", password = "1123456789@" };
 
-        var result = await _client.PostAsJsonAsync(url, body);
+        var result = await _client.PostAsJsonAsync(urlEndpoint, body);
 
         Assert.AreEqual(HttpStatusCode.Unauthorized, result.StatusCode);
     }
@@ -47,11 +46,9 @@ public class AuthenticateTests
     [TestMethod]
     public async Task POSTGivenAnInactiveUserAccountWithCorrectCredentialsItShouldReturnStatusCode403()
     {
-        var url = "api/v1/authenticate";
-
         var body = new { email = "lucas@gmail.com", password = "123456789@" };
 
-        var result = await _client.PostAsJsonAsync(url, body);
+        var result = await _client.PostAsJsonAsync(urlEndpoint, body);
 
         Assert.AreEqual(HttpStatusCode.Forbidden, result.StatusCode);
     }
@@ -59,11 +56,9 @@ public class AuthenticateTests
     [TestMethod]
     public async Task POSTGivenAnInvalidRequestItShouldReturnStatusCode400()
     {
-        var url = "api/v1/authenticate";
-
         var body = new { password = "123456789@" };
 
-        var result = await _client.PostAsJsonAsync(url, body);
+        var result = await _client.PostAsJsonAsync(urlEndpoint, body);
 
         Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
     }
@@ -71,11 +66,9 @@ public class AuthenticateTests
     [TestMethod]
     public async Task POSTGivenAnUnregisteredAccountItShouldReturnStatusCode404()
     {
-        var url = "api/v1/authenticate";
-
         var body = new { email = "matheus@gmail.com", password = "123456789@" };
 
-        var result = await _client.PostAsJsonAsync(url, body);
+        var result = await _client.PostAsJsonAsync(urlEndpoint, body);
 
         Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
     }
