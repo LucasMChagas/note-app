@@ -16,4 +16,10 @@
     <ProjectReference Include="..\NoteApp.Infra\NoteApp.Infra.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="NoteApp.Tests"/>
+	</ItemGroup>
+
+	
+
 </Project>

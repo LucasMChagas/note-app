@@ -21,3 +21,5 @@ app.UseAccountEndpoints();
 app.UseNoteEndpoints();
 
 app.Run();
+
+public partial class Program { }

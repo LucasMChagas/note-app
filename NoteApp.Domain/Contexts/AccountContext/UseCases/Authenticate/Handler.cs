@@ -51,7 +51,7 @@ public class Handler : IRequestHandler<Request, Response>
         #region 03.Checar a senha
 
         if (!user.Password.Challenge(request.Password))
-            return new Response("Usuário ou senha inválidos", 400);
+            return new Response("Usuário ou senha inválidos", 401);
 
         #endregion
 
@@ -60,7 +60,7 @@ public class Handler : IRequestHandler<Request, Response>
         try
         {
             if (!user.Email.Verification.IsActive)
-                return new Response("A conta não está ativada", 400);
+                return new Response("A conta não está ativada", 403);
         }
         catch 
         {
