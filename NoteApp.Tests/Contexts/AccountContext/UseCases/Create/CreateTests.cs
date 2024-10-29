@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NoteApp.Domain.Services;
-using NoteApp.Tests.Integration;
+using NoteApp.Tests.Data;
 using NoteApp.Tests.Services;
 using System.Net;
 using System.Net.Http.Json;

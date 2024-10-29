@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using NoteApp.Tests.Integration;
+using NoteApp.Tests.Data;
 
 namespace NoteApp.Tests.Contexts.AccountContext.UseCases.Authenticate;
 
@@ -27,7 +27,7 @@ public class AuthenticateTests
     [TestMethod]
     public async Task POSTGivenAnActiveUserAccountWithCorrectCredentialsItShouldReturnStatusCode200()
     {
-        var body = new { email = "lumidach@gmail.com", password = "123456789@" };
+        var body = new { email = "lucasadm@gmail.com", password = "123456789@" };
 
         var result = await _client.PostAsJsonAsync(urlEndpoint, body);
 
@@ -37,7 +37,7 @@ public class AuthenticateTests
     [TestMethod]
     public async Task POSTGivenAnActiveUserAccountWithIncorrectCredentialsItShouldReturnStatusCode401()
     {
-        var body = new { email = "lumidach@gmail.com", password = "1123456789@" };
+        var body = new { email = "lucasadm@gmail.com", password = "1123456789@" };
 
         var result = await _client.PostAsJsonAsync(urlEndpoint, body);
 

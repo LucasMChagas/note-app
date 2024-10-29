@@ -8,7 +8,7 @@ using NoteApp.Domain.Services;
 using NoteApp.Infra.Data;
 using NoteApp.Tests.Services;
 
-namespace NoteApp.Tests.Integration;
+namespace NoteApp.Tests;
 
 public class NoteAppApiApplication : WebApplicationFactory<Program>
 {

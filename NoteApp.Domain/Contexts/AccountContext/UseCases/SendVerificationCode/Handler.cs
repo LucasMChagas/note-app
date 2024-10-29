@@ -38,6 +38,8 @@ public class Handler : IRequestHandler<Request, Response>
 		try
 		{
             user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
+            if (user is null)
+                return new Response("Usuário não cadastrado", 404);
         }
 		catch 
 		{
