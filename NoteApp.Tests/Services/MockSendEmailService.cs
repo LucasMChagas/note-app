@@ -8,7 +8,7 @@ namespace NoteApp.Tests.Services
         public List<EmailMessage> SentEmails { get; } = new List<EmailMessage>();
         public bool ShouldFail {get; set;} = false;
 
-        public Task SendVerificatioEmailAsync(User user, CancellationToken cancellationToken)
+        public Task SendVerificationEmailAsync(User user, CancellationToken cancellationToken)
         {
             if (ShouldFail)
             {

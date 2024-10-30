@@ -27,8 +27,4 @@
     <ProjectReference Include="..\NoteApp.Domain\NoteApp.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Contexts\AccountContext\UseCases\AccountVerification\" />
-  </ItemGroup>
-
 </Project>

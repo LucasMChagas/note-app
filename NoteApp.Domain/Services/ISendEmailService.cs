@@ -4,5 +4,5 @@ namespace NoteApp.Domain.Services;
 
 public interface ISendEmailService
 {
-    Task SendVerificatioEmailAsync(User user, CancellationToken cancellationToken);
+    Task SendVerificationEmailAsync(User user, CancellationToken cancellationToken);
 }

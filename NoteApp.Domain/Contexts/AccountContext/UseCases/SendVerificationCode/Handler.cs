@@ -55,7 +55,7 @@ public class Handler : IRequestHandler<Request, Response>
 
 			user.Email.Verification.NewCode();
 			await _repository.UpdateAsync(user, cancellationToken);
-			await _service.SendVerificatioEmailAsync(user, cancellationToken);
+			await _service.SendVerificationEmailAsync(user, cancellationToken);
 		}
 		catch 
 		{

@@ -33,7 +33,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         #region 02.Verificar usuário no banco
 
-        User? user;
+        User user;
 
         try
         {

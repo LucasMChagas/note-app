@@ -31,14 +31,13 @@ public class Handler : IRequestHandler<Request, Response>
         try
         {
             user = await _repository.GetUserByEmail(request.Email, cancellationToken);
+            if (user is null)
+                return new Response("Conta não cadastrada!", 404);
         }
         catch 
         {
             return new Response("Erro ao recuperar a conta", 500);
-        }        
-
-        if (user is null)
-            return new Response("Conta não cadastrada!", 404);
+        }          
 
         try
         {
@@ -48,7 +47,7 @@ public class Handler : IRequestHandler<Request, Response>
         }
         catch (Exception ex)
         {
-            return new Response(ex.Message, 400);
+            return new Response(ex.Message, 500);
         }
 
         try

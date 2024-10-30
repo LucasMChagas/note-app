@@ -90,7 +90,7 @@ public class Handler : IRequestHandler<Request, Response>
         try
         {
             
-            await _service.SendVerificatioEmailAsync(user, cancellationToken);
+            await _service.SendVerificationEmailAsync(user, cancellationToken);
         }
         catch
         {

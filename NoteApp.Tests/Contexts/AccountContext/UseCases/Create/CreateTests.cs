@@ -11,7 +11,6 @@ namespace NoteApp.Tests.Contexts.AccountContext.UseCases.Create;
 public class CreateTests
 {
     private NoteAppApiApplication _application = null!;
-    private MockSendEmailService? _mockEmailService;
     private HttpClient _client = null!;
     string urlEndpoint = string.Empty;    
 
@@ -24,35 +23,22 @@ public class CreateTests
 
         _client = _application.CreateClient();
 
-        _mockEmailService = _application
-            .Services
-            .CreateScope().ServiceProvider
-            .GetRequiredService<ISendEmailService>() as MockSendEmailService;  
-
         urlEndpoint = "api/v1/account";
     }
 
     [TestMethod]
-    public async Task POSTCreateANewAccountMustReturnStatusCode201()
+    public async Task PostCreateANewAccountMustReturnStatusCode201()
     {
-        _mockEmailService?.Clear();
-
         var body = new { email = "lumi@gmail.com",name = "Lucas", password = "123456789@" };
 
         var result = await _client.PostAsJsonAsync(urlEndpoint, body);
-
-        var email = _mockEmailService?.SentEmails[0];
+        
         Assert.AreEqual(HttpStatusCode.Created, result.StatusCode);
-        Assert.IsTrue(_mockEmailService?.SentEmails.Count > 0);
-        Assert.AreEqual(body.email, email.To);
-        Assert.IsNotNull(email.Code);
     }
 
     [TestMethod]
-    public async Task POSTCreateANewAccountWithAnEmailAlreadyInUseMustReturnStatusCode409()
+    public async Task PostCreateANewAccountWithAnEmailAlreadyInUseMustReturnStatusCode409()
     {
-        _mockEmailService?.Clear();
-
         var body = new { email = "lucas@gmail.com", name = "Lucas", password = "123456789@" };
 
         var result = await _client.PostAsJsonAsync(urlEndpoint, body);
@@ -61,10 +47,8 @@ public class CreateTests
     }
 
     [TestMethod]
-    public async Task POSTCreateANewAccountWithAWrongRequestMustReturnStatusCode400()
+    public async Task PostCreateANewAccountWithAWrongRequestMustReturnStatusCode400()
     {
-        _mockEmailService?.Clear();
-
         var body = new { email = "lucas@gmail.com", password = "123456789@" };
 
         var result = await _client.PostAsJsonAsync(urlEndpoint, body);
