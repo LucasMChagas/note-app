@@ -1,0 +1,21 @@
+﻿@inherits LayoutComponentBase
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudAppBar>
+    <MudLink Class="pa-1" Href="/cadastro">
+        <MudImage Width="200" Src="/images/logo.png"></MudImage>
+    </MudLink>
+    <MudSpacer/>
+    <div>
+        <MudButton Href="/login">Login</MudButton>
+        <MudButton Href="/register">Register</MudButton>
+    </div>
+</MudAppBar>
+<MudGrid Justify="Justify.Center" Style="height: 102vh; align-items: center">
+    @Body
+</MudGrid>
+
+
