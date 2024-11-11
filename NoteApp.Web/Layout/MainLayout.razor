@@ -1,21 +1,46 @@
-﻿@inherits LayoutComponentBase
-<MudThemeProvider />
+﻿@using MudBlazor.Utilities
+@inherits LayoutComponentBase
+<MudThemeProvider @bind-IsDarkMode="_isDarkMode" Theme="_theme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudAppBar>
-    <MudLink Class="pa-1" Href="/cadastro">
-        <MudImage Width="200" Src="/images/logo.png"></MudImage>
+    <MudLink Class="pa-1 mt-2" Href="/cadastro">
+        <MudImage Width="150" Src="/images/logo.png"></MudImage>
     </MudLink>
     <MudSpacer/>
     <div>
-        <MudButton Href="/login">Login</MudButton>
-        <MudButton Href="/register">Register</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" Href="/login">Login</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Outlined" Href="/register">Register</MudButton>
     </div>
 </MudAppBar>
 <MudGrid Justify="Justify.Center" Style="height: 102vh; align-items: center">
     @Body
 </MudGrid>
+
+@code{
+    private bool _isDarkMode = true;
+    private MudTheme _theme = new()
+    {
+        // Typography = new Typography()
+        // {
+        //     Default = new Default()
+        //     {
+        //         FontFamily = ["Raleway", "sans-serif"]
+        //     }
+        // },
+        PaletteLight = new PaletteLight()
+        {
+            Primary = new MudColor("#3B0A77"),
+            Secondary = new MudColor("#e0e0e0"),
+            Tertiary = new MudColor("#6310C0"),
+            AppbarBackground = new MudColor("#e0e0e0"),
+            Background = new MudColor("#3B0A77"),
+            TextPrimary = new MudColor("#e0e0e0"),
+        }
+    };
+    
+}
 
 
