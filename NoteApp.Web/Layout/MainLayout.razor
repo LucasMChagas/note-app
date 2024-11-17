@@ -1,13 +1,18 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@using MudBlazor.Services
+@using NoteApp.Web.Services
+@inherits LayoutComponentBase
+@inject IStorageService StorageService
+@inject NavigationManager Navigator
 
-<MudThemeProvider @ref="_mudThemeProvider" @bind-IsDarkMode="_isDarkMode" Theme="Configuration.Theme" />
+<MudThemeProvider @ref="_mudThemeProvider" @bind-IsDarkMode="Configuration.IsDarkMode" Theme="Configuration.Theme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudAppBar>
     <MudLink Class="pa-1 mt-2" Href="/cadastro">
-        @if (_isDarkMode)
+        @if (Configuration.IsDarkMode)
         {
             <MudImage Width="150" Src="/images/whitelogo.png"></MudImage>
         }
@@ -17,34 +22,49 @@
         }
     </MudLink>
     <MudSpacer/>
-    <div>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" Href="/login">Login</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Outlined" Href="/register">Register</MudButton>
-    </div>
-    <MudSwitch @bind-Value="@_isDarkMode"/>
+    @if (IsAuthenticated)
+    {
+        <MudAvatar Color="Color.Primary">M</MudAvatar>
+    }
+    else
+    {
+        <div>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Href="/login">Login</MudButton>
+            <MudButton Color="Color.Primary" Variant="Variant.Outlined" Href="/register">Register</MudButton>
+        </div>
+    }
+    
 </MudAppBar>
 <MudGrid Justify="Justify.Center" Style="height: 102vh; align-items: center">
     @Body
 </MudGrid>
 
 @code{
-    private bool _isDarkMode = false;
+    private bool IsAuthenticated = false;
+    private string Token;
     private MudThemeProvider _mudThemeProvider = null!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            Configuration.IsDarkMode = await _mudThemeProvider.GetSystemPreference();
             await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
         }
     }
 
     private Task OnSystemPreferenceChanged(bool value)
     {
-        _isDarkMode = value;
+        Configuration.IsDarkMode = value;
         StateHasChanged();
         return Task.CompletedTask;
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        Token = await StorageService.GetItemAsync("jwtToken");
+        IsAuthenticated = Token is not (null or FilterOperator.String.Empty);
+        Navigator.NavigateTo("/notes");
     }
     
 }

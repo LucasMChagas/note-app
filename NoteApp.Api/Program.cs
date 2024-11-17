@@ -2,6 +2,14 @@ using NoteApp.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddCors(
+    options => options.AddPolicy(
+        "Wasm",
+        policy => policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod() 
+    ));
 builder.AddConfiguration();
 builder.AddDatabase();
 builder.AddJwtAuthentication();
@@ -10,6 +18,7 @@ builder.AddNoteContext();
 builder.AddMediatR();
 
 var app = builder.Build();
+app.UseCors("Wasm");
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -1,42 +1,63 @@
 ﻿@page "/login"
 @layout MainLayout
+@inherits AuthenticatePage
+
 
 <PageTitle>Login</PageTitle>
 
 <MudItem  sm="12" md="8" lg="4">
-    <MudPaper  Class="mud-width-full pa-8 container">
-        <div class="d-flex justify-center mb-4 ">
-            <MudImage Src="/images/logo.png"></MudImage>
-        </div>
-        
+    <MudPaper Class="mud-width-full pa-8 container">
+        @if (Configuration.IsDarkMode)
+        {
+            <div class="d-flex justify-center mb-4 ">
+                <MudImage Src="/images/whitelogo.png"></MudImage>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex justify-center mb-4 ">
+                <MudImage Src="/images/logo.png"></MudImage>
+            </div>
+        }
         <MudText Align="Align.Center" Typo="Typo.subtitle2" Color="Color.Primary">Your notes on the cloud</MudText>
-        
-        <MudForm @ref="_mudForm">
+
+        <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
+            <DataAnnotationsValidator/>
             <MudTextField
-                T="string" 
-                Label="E-mail" 
-                InputType="InputType.Email" 
+                T="string"
+                Label="E-mail"
+                InputType="InputType.Email"
                 Required="true"
                 RequiredError="Informe o E-mail"
-                Validation="@(new EmailAddressAttribute{ ErrorMessage ="E-mail inválido"})"/>
+                Validation="@(new EmailAddressAttribute { ErrorMessage = "E-mail inválido" })"
+                For="@(()=> InputModel.Email)"
+                @bind-Value="InputModel.Email"/>
 
             <MudTextField
                 T="string"
                 Label="Senha"
                 InputType="InputType.Password"
                 Required="true"
-                RequiredError="Senha inválida"/>
-        </MudForm>
-        <div class="d-flex mt-8 justify-center">
-            <MudButton Href="/register" Class="mr-20" Color="Color.Primary" Variant="Variant.Filled">Registrar-se</MudButton>
-            <MudButton Color="Color.Primary" Variant="Variant.Outlined">Entrar</MudButton>
-        </div>
+                RequiredError="Senha inválida"
+                For="@(()=> InputModel.Password)"
+                @bind-Value="InputModel.Password"/>
+
+            <div class="d-flex mt-8 justify-center">
+                @if (IsBusy)
+                {
+                    <MudProgressCircular Color="Color.Info"  Indeterminate="true"></MudProgressCircular>
+                }
+                else
+                {
+                    <MudButton Href="/register" Class="mr-20" Color="Color.Primary" Variant="Variant.Filled">Registrar-se</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Outlined">Entrar</MudButton>
+                }
+            </div>
+        </EditForm>
+        
     </MudPaper>
 </MudItem>
 
-@code{
-    MudForm? _mudForm;
-}
 
 
 

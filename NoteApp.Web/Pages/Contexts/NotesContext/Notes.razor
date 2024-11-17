@@ -1,0 +1,20 @@
+@page "/notes"
+@using NoteApp.Web.Services
+@layout MainLayout
+@inject IStorageService StorageService
+@inject NavigationManager NavigationManager
+
+<h3>Notes </h3>
+<p>Aqui fica as suas notas</p>
+
+@code {
+    private string Token;
+    protected override async Task OnInitializedAsync()
+    {
+        Token = await StorageService.GetItemAsync("jwtToken");
+        if (Token is null or FilterOperator.String.Empty)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}
