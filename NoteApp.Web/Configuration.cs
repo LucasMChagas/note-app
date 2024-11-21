@@ -25,7 +25,10 @@ public static class Configuration
             AppbarBackground = new MudColor("#e0e0e0"),
             Background = new MudColor("#3B0A77"),
             TextPrimary = new MudColor("#e0e0e0"),
-            TextSecondary = new MudColor("#3B0A77"),
+            TextSecondary = new MudColor("3B0A77"),
+            PrimaryContrastText = new MudColor("#e0e0e0"),
+            
+            
         },
         PaletteDark = new PaletteDark()
         {

@@ -4,6 +4,7 @@
 @inject IStorageService StorageService
 @inject NavigationManager NavigationManager
 
+
 <h3>Notes </h3>
 <p>Aqui fica as suas notas</p>
 
@@ -15,6 +16,7 @@
         if (Token is null or FilterOperator.String.Empty)
         {
             NavigationManager.NavigateTo("/");
-        }
+        }        
+       
     }
 }

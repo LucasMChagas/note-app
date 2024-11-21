@@ -4,7 +4,7 @@ namespace NoteApp.Domain.Contexts.AccountContext.UseCases.Create;
 
 public class Response : SharedContext.UseCases.Response
 {
-    protected Response()
+    public Response()
     {
 
     }

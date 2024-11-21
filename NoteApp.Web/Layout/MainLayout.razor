@@ -1,9 +1,9 @@
-﻿@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
-@using MudBlazor.Services
-@using NoteApp.Web.Services
+﻿@using NoteApp.Web.Services
+@using NoteApp.Web.Components
 @inherits LayoutComponentBase
 @inject IStorageService StorageService
 @inject NavigationManager Navigator
+@inject AppState AppState
 
 <MudThemeProvider @ref="_mudThemeProvider" @bind-IsDarkMode="Configuration.IsDarkMode" Theme="Configuration.Theme" />
 <MudPopoverProvider />
@@ -11,36 +11,13 @@
 <MudSnackbarProvider />
 
 <MudAppBar>
-    <MudLink Class="pa-1 mt-2" Href="/cadastro">
-        @if (Configuration.IsDarkMode)
-        {
-            <MudImage Width="150" Src="/images/whitelogo.png"></MudImage>
-        }
-        else
-        {
-            <MudImage Width="150" Src="/images/logo.png"></MudImage>
-        }
-    </MudLink>
-    <MudSpacer/>
-    @if (IsAuthenticated)
-    {
-        <MudAvatar Color="Color.Primary">M</MudAvatar>
-    }
-    else
-    {
-        <div>
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" Href="/login">Login</MudButton>
-            <MudButton Color="Color.Primary" Variant="Variant.Outlined" Href="/register">Register</MudButton>
-        </div>
-    }
-    
+    <MenuItems IsAuthenticated="@AppState.IsAuthenticated"></MenuItems>
 </MudAppBar>
 <MudGrid Justify="Justify.Center" Style="height: 102vh; align-items: center">
     @Body
 </MudGrid>
 
 @code{
-    private bool IsAuthenticated = false;
     private string Token;
     private MudThemeProvider _mudThemeProvider = null!;
 
@@ -63,8 +40,13 @@
     protected override async Task OnInitializedAsync()
     {
         Token = await StorageService.GetItemAsync("jwtToken");
-        IsAuthenticated = Token is not (null or FilterOperator.String.Empty);
+        AppState.IsAuthenticated = Token is not (null or FilterOperator.String.Empty);
+        AppState.OnChange += StateHasChanged;
         Navigator.NavigateTo("/notes");
+    }
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
     }
     
 }

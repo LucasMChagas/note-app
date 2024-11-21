@@ -1,0 +1,27 @@
+<MudLink Class="pa-1 mt-2" Href="/">
+    @if (Configuration.IsDarkMode)
+    {
+    <MudImage Width="150" Src="/images/whitelogo.png"></MudImage>
+    }
+    else
+    {
+    <MudImage Width="150" Src="/images/logo.png"></MudImage>
+    }
+</MudLink>
+<MudSpacer/>
+@if (IsAuthenticated)
+{
+    <MudAvatar Color="Color.Primary">M</MudAvatar>
+}
+else
+{
+    <div>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" Href="/login">Login</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Outlined" Href="/register">Register</MudButton>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsAuthenticated { get; set; } = false;
+}

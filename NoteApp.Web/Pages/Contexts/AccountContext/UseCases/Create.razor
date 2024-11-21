@@ -1,5 +1,6 @@
 @page "/Register"
 @layout MainLayout 
+@inherits CreatePage 
 
 <PageTitle>Registrar</PageTitle>
 
@@ -20,45 +21,49 @@
 
         <MudText Align="Align.Center" Typo="Typo.subtitle2" Color="Color.Primary">Your notes on the cloud</MudText>
         
-        <MudForm @ref="_mudForm">
+        <EditForm Model="@InputModel" OnValidSubmit="OnValidSubmitAsync">
+            <DataAnnotationsValidator/>
             <MudTextField
                 T="string"
                 Label="Nome"
                 InputType="InputType.Text"
                 Required="true"
-                RequiredError="O nome deve ser fornecido"/>
-            
+                RequiredError="O nome deve ser fornecido"
+                For="@(() => InputModel.Name)"
+                @bind-Value="InputModel.Name"/>
+
             <MudTextField
                 T="string"
                 Label="E-mail"
                 InputType="InputType.Email"
                 Required="true"
                 RequiredError="Informe o E-mail"
-                Validation="@(new EmailAddressAttribute { ErrorMessage = "E-mail inválido" })"/>
+                Validation="@(new EmailAddressAttribute { ErrorMessage = "E-mail inválido" })"
+                For="@(() => InputModel.Email)"
+                @bind-Value="InputModel.Email"/>
 
             <MudTextField
                 T="string"
                 Label="Senha"
                 InputType="InputType.Password"
                 Required="true"
-                RequiredError="Senha inválida"/>
-        </MudForm>
-        <div class="d-flex mt-8 justify-center">
-            <MudButton Href="/login" Class="mr-20" Color="Color.Primary" Variant="Variant.Filled">Já tem uma conta?</MudButton>
-            <MudButton Href="/" Color="Color.Primary" Variant="Variant.Outlined">Cadastrar-se</MudButton>
-        </div>
+                RequiredError="Senha inválida"
+                For="@(() => InputModel.Password)"
+                @bind-Value="InputModel.Password"/>
+            
+            <div class="d-flex mt-8 justify-center">
+                <MudButton Href="/login" Class="mr-20" Color="Color.Primary" Variant="Variant.Filled">Já tem uma conta?</MudButton>
+                <MudButton ButtonType="ButtonType.Submit"  Color="Color.Primary" Variant="Variant.Outlined">Cadastrar-se</MudButton>
+            </div>
+        </EditForm>
+        
     </MudPaper>
 </MudItem>
 
 @code{
-
-    MudForm? _mudForm;
     protected override Task OnInitializedAsync()
     {
         StateHasChanged();
         return Task.CompletedTask;
     }
-
-    
-
 }

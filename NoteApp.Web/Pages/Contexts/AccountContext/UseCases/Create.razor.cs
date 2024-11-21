@@ -1,15 +1,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using NoteApp.Domain.Contexts.AccountContext.UseCases.Authenticate;
+using NoteApp.Domain.Contexts.AccountContext.UseCases.Create;
 using NoteApp.Web.Services;
 
 namespace NoteApp.Web.Pages.Contexts.AccountContext.UseCases;
 
-public partial class AuthenticatePage : ComponentBase
+public partial class CreatePage : ComponentBase
 {
-    #region Dependecies
-    
     [Inject]
     public ISnackbar Snackbar { get; set; } = null!;
     [Inject]
@@ -18,37 +16,19 @@ public partial class AuthenticatePage : ComponentBase
     public IRequestHandler<Request, Response> HandleRequest { get; set; } = null!;
     [Inject]
     public IStorageService StorageService { get; set; } = null!;
-    [Inject]
-    public AppState AppState { get; set; } = null!;
     
-    #endregion
-
-    #region Properties
-
-    public bool IsBusy { get; set; } = false;
-    public Request InputModel { get; set; } = new(String.Empty, String.Empty);
-
-    #endregion
+    public Request InputModel { get; set; } = new(String.Empty, String.Empty, String.Empty);
     
-    protected override Task OnInitializedAsync()
-    {
-        return Task.CompletedTask;
-    }
-
     public async Task OnValidSubmitAsync()
     {
-        IsBusy = true;
-
         try
         {
+            Snackbar.Add("chamou!");
             var result = await HandleRequest.Handle(InputModel, new CancellationToken());
             if (result.IsSuccess)
             {
-                Snackbar.Add("Login efetuado com sucesso!", Severity.Success);
-                await StorageService.SetItemAsync("jwtToken", result.Data.Token);
-                await StorageService.SetItemAsync("name", result.Data.Name);
-                AppState.IsAuthenticated = true;
-                NavigationManager.NavigateTo("/notes");
+                Snackbar.Add("Conta criada com sucesso!", Severity.Success); 
+                NavigationManager.NavigateTo("/login");
             }
             else
             {
@@ -60,9 +40,6 @@ public partial class AuthenticatePage : ComponentBase
         {
             Snackbar.Add(e.Message, Severity.Error);
         }
-        finally
-        {
-            IsBusy = false;
-        }
+        
     }
 }
