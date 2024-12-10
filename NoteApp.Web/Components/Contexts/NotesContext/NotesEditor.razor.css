@@ -1,0 +1,14 @@
+.content {
+    margin-top: 64px   ;
+    flex: 1;
+    background-color: #4a148c; /* roxo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.content .inner-box {
+    background-color: red;
+    width: 90%;
+    height: 90%;
+    border-radius: 15px;
+}

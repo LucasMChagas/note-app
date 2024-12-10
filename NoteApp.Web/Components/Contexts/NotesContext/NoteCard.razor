@@ -1,0 +1,44 @@
+@using MudBlazor.Utilities
+@for (int i = 0; i < Interations; i++)
+{
+    var index = i;
+    <div class="@GetClass(index)" @onclick="() => ToggleDiv(index)">
+        <div class="note-content">
+            <h2 class="note-title">Título da nota @i </h2>
+            <p class="note-summary">Conteúdo da nota aqui será descrito um resumo da nota...</p>
+            <div class="note-options">
+                <MudChip Text="purple" Color="@Color.Primary" Label="true" Size="Size.Small" Value="@Color.Primary">@DateTime.Now.Date.ToString("dd/MM/yy")</MudChip>
+                <MudIconButton Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"></MudIconButton>
+            </div> 
+        </div>
+    </div> 
+}
+
+
+@code {
+
+    [Parameter]
+    public int Interations { get; set; }
+
+    private List<bool> activeDivs;
+
+    private void ToggleDiv(int index)
+    {
+        for (int i = 0; i < activeDivs.Count; i++)
+        {
+            activeDivs[i] = false;
+        } 
+        activeDivs[index] = true;
+    }
+
+    private string GetClass(int index)
+    {
+        return activeDivs[index] ? "note-card is-active" : "note-card";
+    }
+
+    protected override void OnInitialized()
+    {
+        activeDivs = Enumerable.Repeat(false, Interations).ToList();
+    }
+
+}

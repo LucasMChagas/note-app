@@ -1,0 +1,38 @@
+.note-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;    
+    background-color: white;
+    padding: 16px;
+    border-radius: 8px;
+    width: 98%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2px;
+}
+.is-active{
+    background-color: #d9d9d9;
+}
+
+.note-content {
+    flex: 1;
+}
+
+.note-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.note-summary {
+    margin: 4px 0 0;
+    font-size: 15px;
+    color: #555;
+}
+
+.note-options{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
