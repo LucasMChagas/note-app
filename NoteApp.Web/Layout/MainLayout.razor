@@ -42,7 +42,12 @@
         Token = await StorageService.GetItemAsync("jwtToken");
         AppState.IsAuthenticated = Token is not (null or FilterOperator.String.Empty);
         AppState.OnChange += StateHasChanged;
-        Navigator.NavigateTo("/notes");
+
+        if (Token != null)
+        {
+            Navigator.NavigateTo("/notes");
+        }
+        
     }
     public void Dispose()
     {

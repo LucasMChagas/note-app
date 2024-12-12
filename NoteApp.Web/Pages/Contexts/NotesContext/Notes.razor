@@ -1,9 +1,13 @@
 @page "/notes"
+@using MediatR
+@using NoteApp.Domain.Contexts.NoteContext.UseCases.GetAll
 @using NoteApp.Web.Services
 @using NoteApp.Web.Components.Contexts.NotesContext
+@using Request = NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request
 @layout NotesLayout
 @inject IStorageService StorageService
 @inject NavigationManager NavigationManager
+@inject IRequestHandler<Request, Response> HandleRequest
 
 <MudAppBar Elevation="1">
     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
@@ -36,6 +40,24 @@
         {
             NavigationManager.NavigateTo("/");
         }
+
+        try
+        {
+            var request = new Request(Token);
+            request.PageNumber = 1;
+            request.PageSize = 5;
+            Console.WriteLine($"{request.PageNumber},{request.PageSize}, {request.Token}");
+            var response = await HandleRequest.Handle(request, new CancellationToken());
+            Console.WriteLine($"Response is : {response}");
+            Console.WriteLine($"verificação {response.IsSuccess}");
+        }
+        catch (Exception e)
+        {
+            // NavigationManager.NavigateTo("/");
+            Console.WriteLine($"debug: {e}");
+            throw;
+        }
+        
     }
     
     private void ToggleDrawer()
