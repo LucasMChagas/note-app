@@ -1,44 +1,52 @@
 @using MudBlazor.Utilities
-@for (int i = 0; i < Interations; i++)
+@using NoteApp.Domain.Contexts.NoteContext.Entities
+@for (int i = 0; i < Notes.Count; i++)
 {
     var index = i;
     <div class="@GetClass(index)" @onclick="() => ToggleDiv(index)">
         <div class="note-content">
-            <h2 class="note-title">Título da nota @i </h2>
-            <p class="note-summary">Conteúdo da nota aqui será descrito um resumo da nota...</p>
+            <h2 class="note-title">@Notes[i].Title</h2>
+            <p class="note-summary">@Notes[i].Body.Substring(0,90).Insert(90,"...")</p>
             <div class="note-options">
                 <MudChip Text="purple" Color="@Color.Primary" Label="true" Size="Size.Small" Value="@Color.Primary">@DateTime.Now.Date.ToString("dd/MM/yy")</MudChip>
                 <MudIconButton Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"></MudIconButton>
-            </div> 
+            </div>
         </div>
-    </div> 
+    </div>
 }
 
 
 @code {
 
-    [Parameter]
-    public int Interations { get; set; }
+    [Parameter] public List<Note> Notes { get; set; } = [];
 
-    private List<bool> activeDivs;
+    private List<bool> _activeDivs;
 
     private void ToggleDiv(int index)
     {
-        for (int i = 0; i < activeDivs.Count; i++)
+        for (int i = 0; i < _activeDivs.Count; i++)
         {
-            activeDivs[i] = false;
+            _activeDivs[i] = false;
         } 
-        activeDivs[index] = true;
+        _activeDivs[index] = true;
     }
 
     private string GetClass(int index)
     {
-        return activeDivs[index] ? "note-card is-active" : "note-card";
+        return _activeDivs[index] ? "note-card is-active" : "note-card";
     }
 
     protected override void OnInitialized()
     {
-        activeDivs = Enumerable.Repeat(false, Interations).ToList();
+        
     }
-
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Notes != null && ( _activeDivs == null || _activeDivs.Count != Notes.Count))
+        {
+            _activeDivs = Enumerable.Repeat(false, Notes.Count).ToList();
+            Console.WriteLine($"_activeDivs inicializado em OnParametersSetAsync com {Notes.Count} itens.");
+        }
+    }
 }
