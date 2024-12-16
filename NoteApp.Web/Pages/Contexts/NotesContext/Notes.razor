@@ -21,12 +21,15 @@
         <MudText Typo="Typo.h6">My App</MudText>
     </MudDrawerHeader>
     <MudNavMenu>
-            <NoteCard Notes="_notes"/>
+        <CascadingValue Value="@Token">
+            <NoteCard OnDataSend="HandleData" Notes="_notes"/>
+        </CascadingValue>
     </MudNavMenu>
 </MudDrawer>
 <MudMainContent Class="pt-16 px-16">
     <MudContainer Class="mt-6">
-       
+        <input type="text" value="@ReceivedNote.Title"/>
+        <input type="text" value="@ReceivedNote.Body"/>
     </MudContainer>
 </MudMainContent>
 
@@ -35,6 +38,7 @@
     private bool _open = false;
     private DrawerClipMode _clipMode = DrawerClipMode.Never;
     private List<Note> _notes = [];
+    private Note? ReceivedNote = new Note("","", new Guid());
     
     protected override async Task OnInitializedAsync()
     {
@@ -52,7 +56,6 @@
                 PageNumber = 1,
                 PageSize = 10
             };
-           
             
             var response = await HandleRequest.Handle(request, new CancellationToken());
             
@@ -62,7 +65,6 @@
             }
             else
             {
-                AppState.IsAuthenticated = false;
                 NavigationManager.NavigateTo("/");
             }
             
@@ -72,11 +74,15 @@
             // NavigationManager.NavigateTo("/");
             Console.WriteLine($"debug: {e}");
         }
-        
     }
     
     private void ToggleDrawer()
     {
         _open = !_open;
+    }
+    
+    private void HandleData(Note data)
+    {
+        ReceivedNote = data;
     }
 }

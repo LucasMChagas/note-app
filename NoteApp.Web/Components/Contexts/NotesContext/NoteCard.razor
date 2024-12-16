@@ -1,15 +1,21 @@
+@using MediatR
 @using MudBlazor.Utilities
 @using NoteApp.Domain.Contexts.NoteContext.Entities
+@using NoteApp.Domain.Contexts.NoteContext.UseCases.Delete
+@using NoteApp.Web.Components.SharedContext
+@using Request = NoteApp.Web.Contexts.NoteContext.UseCases.Delete.Request
+@inject IDialogService DialogService
+@inject IRequestHandler<Request, Response> HandlerRequest
 @for (int i = 0; i < Notes.Count; i++)
 {
     var index = i;
-    <div class="@GetClass(index)" @onclick="() => ToggleDiv(index)">
+    <div class="@GetClass(index)" @onclick="() => { ToggleDiv(index); SendData(Notes[index]); }">
         <div class="note-content">
             <h2 class="note-title">@Notes[i].Title</h2>
             <p class="note-summary">@Notes[i].Body.Substring(0,90).Insert(90,"...")</p>
             <div class="note-options">
                 <MudChip Text="purple" Color="@Color.Primary" Label="true" Size="Size.Small" Value="@Color.Primary">@DateTime.Now.Date.ToString("dd/MM/yy")</MudChip>
-                <MudIconButton Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"></MudIconButton>
+                <MudIconButton  @onclick="() => DeleteNote(Notes[index].Id)" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"></MudIconButton>
             </div>
         </div>
     </div>
@@ -18,10 +24,14 @@
 
 @code {
 
-    [Parameter] public List<Note> Notes { get; set; } = [];
-
+    [Parameter] 
+    public List<Note> Notes { get; set; } = [];
+    [Parameter] 
+    public EventCallback<Note> OnDataSend { get; set; }
+    [CascadingParameter]
+    public string Token { get; set; }
     private List<bool> _activeDivs;
-
+    
     private void ToggleDiv(int index)
     {
         for (int i = 0; i < _activeDivs.Count; i++)
@@ -35,11 +45,6 @@
     {
         return _activeDivs[index] ? "note-card is-active" : "note-card";
     }
-
-    protected override void OnInitialized()
-    {
-        
-    }
     
     protected override async Task OnParametersSetAsync()
     {
@@ -47,6 +52,42 @@
         {
             _activeDivs = Enumerable.Repeat(false, Notes.Count).ToList();
             Console.WriteLine($"_activeDivs inicializado em OnParametersSetAsync com {Notes.Count} itens.");
+        }
+    }
+    
+    private async void SendData(Note note)
+    {
+        await OnDataSend.InvokeAsync(note);
+    }
+
+    private async Task DeleteNote(Guid id)
+    {
+        var parameters = new DialogParameters<ConfirmDialog>
+        {
+            { x => x.ContentText, "Você tem certeza que deseja excluir essa nota?" },
+            { x => x.ButtonText, "Sim" },
+            { x => x.Color, Color.Success }
+        }; 
+        
+        var dialogResult = await DialogService.Show<ConfirmDialog>("Confirm", parameters).Result;
+        Console.WriteLine("id da nota: " + id.ToString());
+        
+        if (!dialogResult.Canceled) 
+        { 
+            Console.WriteLine("User confirmed!");
+            var request = new Request
+            {
+                NoteId = id,
+                Token = this.Token
+            };
+            HandlerRequest.Handle(request, new CancellationToken());
+            var note = Notes.FirstOrDefault(x => x.Id == id);
+            Notes.Remove(note);
+            StateHasChanged();
+        }
+        else 
+        { 
+            Console.WriteLine("User cancelled!");
         }
     }
 }

@@ -2,7 +2,7 @@
 
 public abstract class Entity : IEquatable<Guid>
 {
-    public Guid Id { get; }
+    public Guid Id { get; set; }
     protected Entity()
     {
         Id = Guid.NewGuid();

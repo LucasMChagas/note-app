@@ -1,10 +1,9 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
 using MediatR;
-using NoteApp.Domain.Contexts.NoteContext.UseCases.GetAll;
+using NoteApp.Domain.Contexts.NoteContext.UseCases.Delete;
 
-namespace NoteApp.Web.Contexts.NoteContext.UseCases.GetAll;
+namespace NoteApp.Web.Contexts.NoteContext.UseCases.Delete;
 
 public class Handler : IRequestHandler<Request, Response>
 {
@@ -18,7 +17,7 @@ public class Handler : IRequestHandler<Request, Response>
     public async Task<Response> Handle(Request request, CancellationToken cancellationToken)
     {
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.Token);
-        var response =  await _httpClient.GetAsync($"api/v1/note/get-all?page={request.PageNumber}&pageSize={request.PageSize}", cancellationToken);
+        var response =  await _httpClient.DeleteAsync($"api/v1/note/delete/{request.NoteId}", cancellationToken);
 
         Response result;
         if (response.IsSuccessStatusCode)
@@ -27,7 +26,7 @@ public class Handler : IRequestHandler<Request, Response>
         }
         else
         {
-            result = new Response("Não autorizado", 401);
+            result = await response.Content.ReadFromJsonAsync<Response>();
         }
         
         return result;
