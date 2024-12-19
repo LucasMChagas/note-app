@@ -8,8 +8,13 @@
 @layout NotesLayout
 @inject IStorageService StorageService
 @inject NavigationManager NavigationManager
-@inject IRequestHandler<Request, Response> HandleRequest
-@inject AppState AppState
+@inject IRequestHandler<
+    NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request, 
+    NoteApp.Domain.Contexts.NoteContext.UseCases.GetAll.Response> HandleGetAllRequest
+@inject IRequestHandler<
+    NoteApp.Web.Contexts.NoteContext.UseCases.Create.Request,
+    NoteApp.Domain.Contexts.NoteContext.UseCases.Create.Response> HandleCreateRequest
+
 
 <MudAppBar Elevation="1">
     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
@@ -22,6 +27,9 @@
     </MudDrawerHeader>
     <MudNavMenu>
         <CascadingValue Value="@Token">
+            <div class="note-content">
+                <MudIconButton @onclick="CreateNote" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Add" Color="Color.Success"></MudIconButton>    
+            </div>
             <NoteCard OnDataSend="HandleData" Notes="_notes"/>
         </CascadingValue>
     </MudNavMenu>
@@ -53,15 +61,13 @@
             var request = new Request
             {
                 Token = this.Token,
-                PageNumber = 1,
-                PageSize = 10
             };
             
-            var response = await HandleRequest.Handle(request, new CancellationToken());
+            var response = await HandleGetAllRequest.Handle(request, new CancellationToken());
             
             if (response.IsSuccess)
             {
-                _notes = response.Data?.Notes;
+                _notes = response.Data.Notes;
             }
             else
             {
@@ -84,5 +90,29 @@
     private void HandleData(Note data)
     {
         ReceivedNote = data;
+    }
+
+    private async void CreateNote()
+    {
+        var createRequest = new NoteApp.Web.Contexts.NoteContext.UseCases.Create.Request
+        {
+            Title = "nota mais recente!",
+            Body = "Conteúdo",
+            Token = Token
+        };
+        var response = await HandleCreateRequest.Handle(createRequest, new CancellationToken());
+    
+        if (response.IsSuccess)
+        {
+            var getAllRequest = new NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request
+            {
+                Token = this.Token,
+            };
+            var result = await HandleGetAllRequest.Handle(getAllRequest, new CancellationToken());
+    
+            _notes = result.Data.Notes;
+            StateHasChanged();
+        }
+        
     }
 }

@@ -5,7 +5,7 @@ namespace NoteApp.Web;
 
 public static class Configuration
 {
-    public const string ApiBaseUrl = "https://localhost:7172";
+    public const string ApiBaseUrl = "http://localhost:5164";
     public const string HttpClientName = "NoteApp";
     public static bool IsDarkMode { get; set; } = false;
     public static readonly MudTheme Theme = new()

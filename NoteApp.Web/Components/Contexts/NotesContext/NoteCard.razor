@@ -6,16 +6,19 @@
 @using Request = NoteApp.Web.Contexts.NoteContext.UseCases.Delete.Request
 @inject IDialogService DialogService
 @inject IRequestHandler<Request, Response> HandlerRequest
-@for (int i = 0; i < Notes.Count; i++)
+@for (int i = 0; i < Notes.Count && Notes != null; i++)
 {
+    Console.WriteLine($"i: {i}");
+    Console.WriteLine($"Notes.Count: {Notes.Count}");
+    Console.WriteLine(i < Notes.Count && Notes != null);
     var index = i;
     <div class="@GetClass(index)" @onclick="() => { ToggleDiv(index); SendData(Notes[index]); }">
         <div class="note-content">
-            <h2 class="note-title">@Notes[i].Title</h2>
-            <p class="note-summary">@Notes[i].Body.Substring(0,90).Insert(90,"...")</p>
+            <h2 class="note-title">@Notes[index].Title</h2>
+            <p class="note-summary">@(Notes[index].Body.Length >= 90 ? Notes[index].Body.Substring(0, 90).Insert(90, "...") : Notes[index].Body)</p>
             <div class="note-options">
-                <MudChip Text="purple" Color="@Color.Primary" Label="true" Size="Size.Small" Value="@Color.Primary">@DateTime.Now.Date.ToString("dd/MM/yy")</MudChip>
-                <MudIconButton  @onclick="() => DeleteNote(Notes[index].Id)" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"></MudIconButton>
+                <MudChip Text="purple" Color="@Color.Primary" Label="true" Size="Size.Small" Value="@Color.Primary">@Notes[index].CreatedAt.ToString("dd/MM/yy")</MudChip>
+                <MudIconButton @onclick="() => DeleteNote(Notes[index].Id)" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"></MudIconButton>
             </div>
         </div>
     </div>

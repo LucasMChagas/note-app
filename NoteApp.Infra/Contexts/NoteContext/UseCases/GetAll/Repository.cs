@@ -20,7 +20,7 @@ public class Repository : IRepository
             .Notes
             .AsNoTracking()
             .Where(n => n.UserId == userId)
-            .OrderBy(n => n.CreatedAt)
+            .OrderByDescending(n => n.CreatedAt)
             .Skip((page - 1) * perPage)
             .Take(perPage)            
             .ToListAsync(cancellationToken);
