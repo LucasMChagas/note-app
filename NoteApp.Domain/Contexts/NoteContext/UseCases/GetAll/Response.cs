@@ -20,7 +20,7 @@ public class Response : SharedContext.UseCases.Response
         Message = message;
     }
 
-    protected Response()
+    public Response()
     {
     }
     public ResponseData? Data { get; set; }

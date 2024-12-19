@@ -4,6 +4,10 @@ namespace NoteApp.Domain.Contexts.NoteContext.UseCases.Create;
 
 public class Response : SharedContext.UseCases.Response
 {
+    public Response()
+    {
+        
+    }
     public Response(
         string message, 
         int status, 

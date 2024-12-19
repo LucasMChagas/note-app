@@ -1,14 +1,18 @@
+@using NoteApp.Web.Components
 @inherits LayoutComponentBase
-<MudThemeProvider />
+@inject AppState AppState
+<MudThemeProvider Theme="Configuration.Theme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
+@* <MudAppBar> *@
+@*     <MenuItems IsAuthenticated="@AppState.IsAuthenticated"></MenuItems> *@
+@* </MudAppBar> *@
+@* <div class="main-container"> *@
+@*     @Body *@
+@* </div> *@
+
 <MudLayout>
-    <h1>Layout para notes</h1>
-    <MudMainContent>
-        <MudContainer>
-            @Body
-        </MudContainer>
-    </MudMainContent>
+    @Body
 </MudLayout>

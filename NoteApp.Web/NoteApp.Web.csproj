@@ -30,4 +30,20 @@
     <Folder Include="Pages\Contexts\NotesContext\UseCases\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Components\Contexts\SharedContext\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Components\Contexts\SharedContext\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Components\Contexts\SharedContext\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Components\Contexts\SharedContext\**" />
+  </ItemGroup>
+
 </Project>
