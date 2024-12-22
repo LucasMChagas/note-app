@@ -1,10 +1,8 @@
 @page "/notes"
 @using MediatR
 @using NoteApp.Domain.Contexts.NoteContext.Entities
-@using NoteApp.Domain.Contexts.NoteContext.UseCases.GetAll
 @using NoteApp.Web.Services
 @using NoteApp.Web.Components.Contexts.NotesContext
-@using Request = NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request
 @layout NotesLayout
 @inject IStorageService StorageService
 @inject NavigationManager NavigationManager
@@ -27,8 +25,20 @@
     </MudDrawerHeader>
     <MudNavMenu>
         <CascadingValue Value="@Token">
-            <div class="note-content">
-                <MudIconButton @onclick="CreateNote" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Add" Color="Color.Success"></MudIconButton>    
+            <div class="search-note">
+                <MudTextField
+                    @bind-Value="@Token"
+                    Variant="Variant.Outlined"
+                    Margin="Margin.Dense"
+                    Adornment="Adornment.End"
+                    AdornmentIcon="@Icons.Material.Filled.Search"
+                    AdornmentColor="Color.Primary"
+                    OnAdornmentClick="ToggleDrawer">
+                </MudTextField>
+            </div>
+            <div class="create-note">
+                <h5>Notas</h5>
+                <MudIconButton @onclick="CreateNote" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Add" Color="Color.Success"></MudIconButton>
             </div>
             <NoteCard OnDataSend="HandleData" Notes="_notes"/>
         </CascadingValue>
@@ -58,7 +68,7 @@
 
         try
         {
-            var request = new Request
+            var request = new NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request
             {
                 Token = this.Token,
             };

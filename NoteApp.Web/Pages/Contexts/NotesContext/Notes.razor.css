@@ -1,0 +1,11 @@
+.create-note{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 25px 10px 25px;
+}
+.search-note{
+    display: flex;
+    align-items: center;    
+    padding: 10px 20px 0px 25px;
+}
