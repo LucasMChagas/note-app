@@ -18,8 +18,8 @@ public class Note : Entity
 
     public string Title { get; private set; } = string.Empty;
     public string Body { get; private set; } = string.Empty;
-    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; private set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
     public Guid UserId { get; private set; }
     public User? User { get; private set; } 
 
@@ -28,5 +28,10 @@ public class Note : Entity
         Title = title;
         Body = body;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void SetId(Guid id)
+    {
+        Id = id;
     }
 }

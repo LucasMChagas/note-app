@@ -37,10 +37,15 @@
                 </MudTextField>
             </div>
             <div class="create-note">
-                <h5>Notas</h5>
+                <h3>@_amountOfNotes Nota(s)</h3>
                 <MudIconButton @onclick="CreateNote" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Add" Color="Color.Success"></MudIconButton>
             </div>
-            <NoteCard OnDataSend="HandleData" Notes="_notes"/>
+            <NoteCard SetAmountNotes="SetAmountNotes" OnDataSend="HandleData" Notes="_notes"/>
+            <div style="display: flex; justify-content: center;">
+                <MudIconButton @onclick="LoadNotes" Size="Size.Medium" Color="Color.Dark" Icon="@Icons.Material.Filled.Add" ></MudIconButton>    
+            </div>
+            
+            
         </CascadingValue>
     </MudNavMenu>
 </MudDrawer>
@@ -52,7 +57,9 @@
 </MudMainContent>
 
 @code {
+    private int _amountOfNotes = 0;
     private string Token;
+    private int PageNumber = 1;
     private bool _open = false;
     private DrawerClipMode _clipMode = DrawerClipMode.Never;
     private List<Note> _notes = [];
@@ -71,12 +78,14 @@
             var request = new NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request
             {
                 Token = this.Token,
+                PageNumber = this.PageNumber
             };
             
             var response = await HandleGetAllRequest.Handle(request, new CancellationToken());
             
             if (response.IsSuccess)
             {
+                _amountOfNotes = response.Data.Notes.Count;
                 _notes = response.Data.Notes;
             }
             else
@@ -102,11 +111,17 @@
         ReceivedNote = data;
     }
 
+    private void SetAmountNotes(int amount)
+    {
+        _amountOfNotes = amount;
+        StateHasChanged();
+    }
+
     private async void CreateNote()
     {
         var createRequest = new NoteApp.Web.Contexts.NoteContext.UseCases.Create.Request
         {
-            Title = "nota mais recente!",
+            Title = "front end",
             Body = "Conteúdo",
             Token = Token
         };
@@ -114,15 +129,33 @@
     
         if (response.IsSuccess)
         {
-            var getAllRequest = new NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request
-            {
-                Token = this.Token,
-            };
-            var result = await HandleGetAllRequest.Handle(getAllRequest, new CancellationToken());
-    
-            _notes = result.Data.Notes;
+            var note = new Note(response.Data.Title, response.Data.Body, new Guid(response.Data.UserId));
+            note.CreatedAt = response.Data.CreatedAt;
+            note.SetId(new Guid(response.Data.Id));
+            
+            _notes.Insert(0, note); 
+            _amountOfNotes = _notes.Count;
             StateHasChanged();
         }
         
+    }
+
+    private async void LoadNotes()
+    {
+        this.PageNumber++;
+        var request = new NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request
+        {
+            Token = this.Token,
+            PageNumber = this.PageNumber
+        };
+            
+        var response = await HandleGetAllRequest.Handle(request, new CancellationToken());
+        
+        if (response.IsSuccess)
+        {
+            _notes.AddRange(response.Data.Notes);
+            _amountOfNotes = _notes.Count;
+            StateHasChanged();
+        }
     }
 }

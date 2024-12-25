@@ -8,9 +8,6 @@
 @inject IRequestHandler<Request, Response> HandlerRequest
 @for (int i = 0; i < Notes.Count && Notes != null; i++)
 {
-    Console.WriteLine($"i: {i}");
-    Console.WriteLine($"Notes.Count: {Notes.Count}");
-    Console.WriteLine(i < Notes.Count && Notes != null);
     var index = i;
     <div class="@GetClass(index)" @onclick="() => { ToggleDiv(index); SendData(Notes[index]); }">
         <div class="note-content">
@@ -31,8 +28,10 @@
     public List<Note> Notes { get; set; } = [];
     [Parameter] 
     public EventCallback<Note> OnDataSend { get; set; }
+    [Parameter] 
+    public EventCallback<int> SetAmountNotes { get; set; }
     [CascadingParameter]
-    public string Token { get; set; }
+    public string Token { get; set; }    
     private List<bool> _activeDivs;
     
     private void ToggleDiv(int index)
@@ -57,7 +56,6 @@
             Console.WriteLine($"_activeDivs inicializado em OnParametersSetAsync com {Notes.Count} itens.");
         }
     }
-    
     private async void SendData(Note note)
     {
         await OnDataSend.InvokeAsync(note);
@@ -73,11 +71,9 @@
         }; 
         
         var dialogResult = await DialogService.Show<ConfirmDialog>("Confirm", parameters).Result;
-        Console.WriteLine("id da nota: " + id.ToString());
         
         if (!dialogResult.Canceled) 
         { 
-            Console.WriteLine("User confirmed!");
             var request = new Request
             {
                 NoteId = id,
@@ -86,11 +82,7 @@
             HandlerRequest.Handle(request, new CancellationToken());
             var note = Notes.FirstOrDefault(x => x.Id == id);
             Notes.Remove(note);
-            StateHasChanged();
-        }
-        else 
-        { 
-            Console.WriteLine("User cancelled!");
+            SetAmountNotes.InvokeAsync(Notes.Count);
         }
     }
 }
