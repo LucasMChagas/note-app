@@ -11,8 +11,8 @@
     var index = i;
     <div class="@GetClass(index)" @onclick="() => { ToggleDiv(index); SendData(Notes[index]); }">
         <div class="note-content">
-            <h2 class="note-title">@Notes[index].Title</h2>
-            <p class="note-summary">@(Notes[index].Body.Length >= 90 ? Notes[index].Body.Substring(0, 90).Insert(90, "...") : Notes[index].Body)</p>
+            <h2 class="note-title">@((MarkupString)Notes[index].Title)</h2>
+            <p class="note-summary">@(Notes[index].Body.Length >= 90 ? (MarkupString)Notes[index].Body.Substring(0, 90).Insert(90, "...") : (MarkupString)Notes[index].Body)</p>
             <div class="note-options">
                 <MudChip Text="purple" Color="@Color.Primary" Label="true" Size="Size.Small" Value="@Color.Primary">@Notes[index].CreatedAt.ToString("dd/MM/yy")</MudChip>
                 <MudIconButton @onclick="() => DeleteNote(Notes[index].Id)" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Delete" Color="Color.Error"></MudIconButton>

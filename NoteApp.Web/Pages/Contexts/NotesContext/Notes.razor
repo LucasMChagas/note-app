@@ -3,6 +3,7 @@
 @using NoteApp.Domain.Contexts.NoteContext.Entities
 @using NoteApp.Web.Services
 @using NoteApp.Web.Components.Contexts.NotesContext
+@using NoteApp.Web.Contexts.NoteContext.UseCases.Update
 @layout NotesLayout
 @inject IStorageService StorageService
 @inject NavigationManager NavigationManager
@@ -19,42 +20,39 @@
     <MudSpacer />
     <MudAvatar Color="Color.Primary">M</MudAvatar>
 </MudAppBar>
-<MudDrawer @bind-Open="@_open" Width="350px" ClipMode="_clipMode" Elevation="1" Variant="@DrawerVariant.Responsive">
-    <MudDrawerHeader>
-        <MudText Typo="Typo.h6">My App</MudText>
-    </MudDrawerHeader>
-    <MudNavMenu>
-        <CascadingValue Value="@Token">
-            <div class="search-note">
-                <MudTextField
-                    @bind-Value="@Token"
-                    Variant="Variant.Outlined"
-                    Margin="Margin.Dense"
-                    Adornment="Adornment.End"
-                    AdornmentIcon="@Icons.Material.Filled.Search"
-                    AdornmentColor="Color.Primary"
-                    OnAdornmentClick="ToggleDrawer">
-                </MudTextField>
-            </div>
-            <div class="create-note">
-                <h3>@_amountOfNotes Nota(s)</h3>
-                <MudIconButton @onclick="CreateNote" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Add" Color="Color.Success"></MudIconButton>
-            </div>
-            <NoteCard SetAmountNotes="SetAmountNotes" OnDataSend="HandleData" Notes="_notes"/>
-            <div style="display: flex; justify-content: center;">
-                <MudIconButton @onclick="LoadNotes" Size="Size.Medium" Color="Color.Dark" Icon="@Icons.Material.Filled.Add" ></MudIconButton>    
-            </div>
-            
-            
-        </CascadingValue>
-    </MudNavMenu>
-</MudDrawer>
-<MudMainContent Class="pt-16 px-16">
-    <MudContainer Class="mt-6">
-        <input type="text" value="@ReceivedNote.Title"/>
-        <input type="text" value="@ReceivedNote.Body"/>
-    </MudContainer>
-</MudMainContent>
+<CascadingValue Value="@Token">
+    <MudDrawer @bind-Open="@_open" Width="350px" ClipMode="_clipMode" Elevation="1" Variant="@DrawerVariant.Responsive">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">My App</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+                <div class="search-note">
+                    <MudTextField
+                        @bind-Value="SearchText"
+                        Variant="Variant.Outlined"
+                        Margin="Margin.Dense"
+                        Adornment="Adornment.End"
+                        AdornmentIcon="@Icons.Material.Filled.Search"
+                        AdornmentColor="Color.Primary"
+                        
+                        OnAdornmentClick="(SearchText) => { }"
+                        TextChanged="OnSearchTextChanged">
+                    </MudTextField>
+                </div>
+                <div class="create-note">
+                    <h3>@_amountOfNotes Nota(s)</h3>
+                    <MudIconButton @onclick="CreateNote" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Add" Color="Color.Success"></MudIconButton>
+                </div>
+                <NoteCard SetAmountNotes="SetAmountNotes" OnDataSend="HandleData" Notes="FilteredNotes"/>
+                <div style="display: flex; justify-content: center;">
+                    <MudIconButton @onclick="LoadNotes" Size="Size.Medium" Color="Color.Dark" Icon="@Icons.Material.Filled.Add" ></MudIconButton>    
+                </div>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent Class="pt-16 px-16">
+        <NotesEditor UpdateNoteList="UpdateNoteList" Note="ReceivedNote"></NotesEditor>
+    </MudMainContent>
+</CascadingValue>
 
 @code {
     private int _amountOfNotes = 0;
@@ -64,6 +62,30 @@
     private DrawerClipMode _clipMode = DrawerClipMode.Never;
     private List<Note> _notes = [];
     private Note? ReceivedNote = new Note("","", new Guid());
+    
+    private string SearchText { get; set; } = string.Empty;
+
+    private List<Note> FilteredNotes { get; set; } = [];
+    
+    private void OnSearchTextChanged(string text)
+    {
+        SearchText = text;
+
+        if (string.IsNullOrWhiteSpace(SearchText))
+        {
+            FilteredNotes = new List<Note>(_notes);
+        }
+        else
+        {
+            FilteredNotes = _notes
+                .Where(n => 
+                    (n.Title != null && n.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) || 
+                    (n.Body != null && n.Body.Contains(SearchText, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+        
+        StateHasChanged();
+    }
     
     protected override async Task OnInitializedAsync()
     {
@@ -92,6 +114,7 @@
             {
                 NavigationManager.NavigateTo("/");
             }
+            FilteredNotes = new List<Note>(_notes);
             
         }
         catch (Exception e)
@@ -109,6 +132,15 @@
     private void HandleData(Note data)
     {
         ReceivedNote = data;
+        StateHasChanged();
+    }
+
+    private void UpdateNoteList(NoteUpdate note)
+    {
+        var index = _notes.FindIndex(n => n.Id == note.Id);
+        _notes[index].SetTitle(note.Title);       
+        _notes[index].SetBody(note.Body);
+        StateHasChanged();
     }
 
     private void SetAmountNotes(int amount)
@@ -121,8 +153,8 @@
     {
         var createRequest = new NoteApp.Web.Contexts.NoteContext.UseCases.Create.Request
         {
-            Title = "front end",
-            Body = "Conteúdo",
+            Title = "Nova nota",
+            Body = " ",
             Token = Token
         };
         var response = await HandleCreateRequest.Handle(createRequest, new CancellationToken());
@@ -135,6 +167,7 @@
             
             _notes.Insert(0, note); 
             _amountOfNotes = _notes.Count;
+            FilteredNotes = _notes;
             StateHasChanged();
         }
         
@@ -155,6 +188,7 @@
         {
             _notes.AddRange(response.Data.Notes);
             _amountOfNotes = _notes.Count;
+            FilteredNotes = _notes;
             StateHasChanged();
         }
     }

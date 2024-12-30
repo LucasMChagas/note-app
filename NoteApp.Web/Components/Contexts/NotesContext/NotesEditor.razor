@@ -1,7 +1,34 @@
-<div class="content">
-    <div class="inner-box"></div>
+@using System.Web
+@using MediatR
+@using NoteApp.Domain.Contexts.NoteContext.Entities
+@using NoteApp.Web.Contexts.NoteContext.UseCases.Update
+@inject IJSRuntime JSRuntime
+@inject IRequestHandler<
+    NoteApp.Web.Contexts.NoteContext.UseCases.Update.Request,
+    NoteApp.Domain.Contexts.NoteContext.UseCases.Update.Response> HandleUpdateRequest
+<div class="editor-container">
+    <MudTextField Class="editor" @bind-Value="Note.Title" OnBlur="OnContentChanged"  OnDebounceIntervalElapsed="OnContentChanged" T="string"  Variant="Variant.Filled" DebounceInterval="2000" Lines="1"  />
+    <MudTextField Class="editor" @bind-Value="Note.Body" OnBlur="OnContentChanged"  OnDebounceIntervalElapsed="OnContentChanged" T="string"  Variant="Variant.Filled" DebounceInterval="2000"  Lines="10" />
 </div>
 
 @code {
+    [Parameter]
+    public Note Note { get; set;} 
     
+    [CascadingParameter]
+    public string Token { get; set; }
+    
+    [Parameter] 
+    public EventCallback<NoteUpdate> UpdateNoteList { get; set; }
+
+    private async Task OnContentChanged()
+    {
+        var request = new Request();
+        request.Token = Token;
+        request.NoteId = Note.Id;
+        request.Title = Note.Title;
+        request.Body = Note.Body;
+        
+        await HandleUpdateRequest.Handle(request, new CancellationToken());
+    }
 }

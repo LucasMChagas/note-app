@@ -1,14 +1,67 @@
-.content {
-    margin-top: 64px   ;
-    flex: 1;
-    background-color: #4a148c; /* roxo */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/*body {*/
+/*    font-family: Arial, sans-serif;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    background-color: #f4f4f9;*/
+/*}*/
+
+.editor-container {
+    max-width: 95%;
+    margin: 50px auto;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
 }
-.content .inner-box {
-    background-color: red;
-    width: 90%;
-    height: 90%;
-    border-radius: 15px;
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background: #f7f7f7;
+    border-bottom: 1px solid #ddd;
+}
+
+.toolbar button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.toolbar button:hover {
+    background: #0056b3;
+}
+
+.editor {
+    min-height: 300px;
+    padding: 15px;
+    font-size: 16px;
+    line-height: 1.6;
+    border: none;
+    outline: none;
+    resize: vertical;
+    overflow-y: auto;
+    color: #333333;
+}
+
+.editor-title {
+    min-height: 10px;
+    padding: 15px;
+    font-size: 16px;
+    line-height: 1.6;
+    border: none;
+    outline: none;
+    resize: vertical;
+    overflow-y: auto;
+    color: #333333;
+}
+
+.editor:focus {
+    outline: 2px solid #007bff;
 }

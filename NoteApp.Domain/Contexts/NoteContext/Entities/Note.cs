@@ -16,8 +16,8 @@ public class Note : Entity
         UserId = userId;
     }
 
-    public string Title { get; private set; } = string.Empty;
-    public string Body { get; private set; } = string.Empty;
+    public string Title { get;  set; } = string.Empty;
+    public string Body { get;  set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
     public Guid UserId { get; private set; }
@@ -33,5 +33,15 @@ public class Note : Entity
     public void SetId(Guid id)
     {
         Id = id;
+    }
+
+    public void SetBody(string body)
+    {
+        Body = body;
+    }
+    
+    public void SetTitle(string title)
+    {
+        Title = title;
     }
 }
