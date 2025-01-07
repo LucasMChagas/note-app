@@ -89,15 +89,15 @@ public class Handler : IRequestHandler<Request, Response>
 
         #region 05.Enviar email de ativação
 
-        try
-        {
-            
-            await _service.SendVerificationEmailAsync(user, cancellationToken);
-        }
-        catch
-        {
-            return new Response("Falha ao enviar o email de verificação", 500);
-        }
+        // try
+        // {
+        //     
+        //     await _service.SendVerificationEmailAsync(user, cancellationToken);
+        // }
+        // catch
+        // {
+        //     return new Response("Falha ao enviar o email de verificação", 500);
+        // }
 
         #endregion
 
