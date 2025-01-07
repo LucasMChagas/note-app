@@ -5,7 +5,7 @@
 @inject NavigationManager Navigator
 @inject AppState AppState
 
-<MudThemeProvider @ref="_mudThemeProvider" @bind-IsDarkMode="Configuration.IsDarkMode" Theme="Configuration.Theme" />
+<MudThemeProvider @ref="_mudThemeProvider"  Theme="Configuration.Theme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -43,10 +43,10 @@
         AppState.IsAuthenticated = Token is not (null or FilterOperator.String.Empty);
         AppState.OnChange += StateHasChanged;
 
-        // if (Token != null)
-        // {
-        //     Navigator.NavigateTo("/notes");
-        // }
+        if (Token != null)
+        {
+            Navigator.NavigateTo("/notes");
+        }
         
     }
     public void Dispose()

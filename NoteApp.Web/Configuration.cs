@@ -24,7 +24,7 @@ public static class Configuration
             Tertiary = new MudColor("#6310C0"),
             AppbarBackground = new MudColor("#e0e0e0"),
             Background = new MudColor("#3B0A77"),
-            TextPrimary = new MudColor("3B0A77"),
+            TextPrimary = new MudColor(Colors.Shades.Black),
             TextSecondary = new MudColor("3B0A77"),
             PrimaryContrastText = new MudColor("#e0e0e0"),
             

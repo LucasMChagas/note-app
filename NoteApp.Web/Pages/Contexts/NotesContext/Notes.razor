@@ -1,26 +1,23 @@
 @page "/notes"
-@using MediatR
-@using NoteApp.Domain.Contexts.NoteContext.Entities
-@using NoteApp.Web.Services
 @using NoteApp.Web.Components.Contexts.NotesContext
-@using NoteApp.Web.Contexts.NoteContext.UseCases.Update
 @layout NotesLayout
-@inject IStorageService StorageService
-@inject NavigationManager NavigationManager
-@inject IRequestHandler<
-    NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request, 
-    NoteApp.Domain.Contexts.NoteContext.UseCases.GetAll.Response> HandleGetAllRequest
-@inject IRequestHandler<
-    NoteApp.Web.Contexts.NoteContext.UseCases.Create.Request,
-    NoteApp.Domain.Contexts.NoteContext.UseCases.Create.Response> HandleCreateRequest
-
 
 <MudAppBar Elevation="1">
     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
     <MudSpacer />
-    <MudAvatar Color="Color.Primary">M</MudAvatar>
+    <MudMenu  ActivationEvent="@MouseEvent.MouseOver" AnchorOrigin="Origin.BottomRight" TransformOrigin="Origin.TopRight">
+        <ActivatorContent>
+            <MudAvatar Color="Color.Primary">M</MudAvatar>
+        </ActivatorContent>
+        <ChildContent>
+            <MudNavMenu >
+                <MudNavLink Disabled="true">Profile</MudNavLink>
+                <MudNavLink OnClick="Logout">Logout</MudNavLink>
+            </MudNavMenu>
+        </ChildContent>
+    </MudMenu>
 </MudAppBar>
-<CascadingValue Value="@Token">
+<CascadingValue Value="@_token">
     <MudDrawer @bind-Open="@_open" Width="350px" ClipMode="_clipMode" Elevation="1" Variant="@DrawerVariant.Responsive">
         <MudDrawerHeader>
             <MudText Typo="Typo.h6">My App</MudText>
@@ -34,162 +31,39 @@
                         Adornment="Adornment.End"
                         AdornmentIcon="@Icons.Material.Filled.Search"
                         AdornmentColor="Color.Primary"
-                        
-                        OnAdornmentClick="(SearchText) => { }"
+                        Immediate="true"
                         TextChanged="OnSearchTextChanged">
                     </MudTextField>
                 </div>
                 <div class="create-note">
                     <h3>@_amountOfNotes Nota(s)</h3>
-                    <MudIconButton @onclick="CreateNote" Size="Size.Small" Variant="Variant.Outlined" Icon="@Icons.Material.Filled.Add" Color="Color.Success"></MudIconButton>
+                    <MudIconButton 
+                        @onclick="CreateNote" 
+                        Size="Size.Small" 
+                        Variant="Variant.Outlined" 
+                        Icon="@Icons.Material.Filled.Add" 
+                        Color="Color.Success"></MudIconButton>
                 </div>
-                <NoteCard SetAmountNotes="SetAmountNotes" OnDataSend="HandleData" Notes="FilteredNotes"/>
+                <NoteCard 
+                    SetAmountNotes="SetAmountNotes" 
+                    OnDataSend="HandleData" 
+                    Notes="FilteredNotes"/>
                 <div style="display: flex; justify-content: center;">
-                    <MudIconButton @onclick="LoadNotes" Size="Size.Medium" Color="Color.Dark" Icon="@Icons.Material.Filled.Add" ></MudIconButton>    
+                    <MudIconButton
+                        @onclick="LoadNotes"
+                        Size="Size.Medium"
+                        Color="Color.Dark"
+                        Icon="@Icons.Material.Filled.Add">
+                    </MudIconButton>    
                 </div>
         </MudNavMenu>
     </MudDrawer>
-    <MudMainContent Class="pt-16 px-16">
-        <NotesEditor UpdateNoteList="UpdateNoteList" Note="ReceivedNote"></NotesEditor>
+    <MudMainContent Style="height: 100vh" Class="pt-16 px-16">
+        <MudContainer Style="height: 80vh" MaxWidth="MaxWidth.ExtraExtraLarge">
+            <NotesEditor
+                UpdateNoteList="UpdateNoteList"
+                Note="_receivedNote">
+            </NotesEditor>
+        </MudContainer>
     </MudMainContent>
 </CascadingValue>
-
-@code {
-    private int _amountOfNotes = 0;
-    private string Token;
-    private int PageNumber = 1;
-    private bool _open = false;
-    private DrawerClipMode _clipMode = DrawerClipMode.Never;
-    private List<Note> _notes = [];
-    private Note? ReceivedNote = new Note("","", new Guid());
-    
-    private string SearchText { get; set; } = string.Empty;
-
-    private List<Note> FilteredNotes { get; set; } = [];
-    
-    private void OnSearchTextChanged(string text)
-    {
-        SearchText = text;
-
-        if (string.IsNullOrWhiteSpace(SearchText))
-        {
-            FilteredNotes = new List<Note>(_notes);
-        }
-        else
-        {
-            FilteredNotes = _notes
-                .Where(n => 
-                    (n.Title != null && n.Title.Contains(SearchText, StringComparison.OrdinalIgnoreCase)) || 
-                    (n.Body != null && n.Body.Contains(SearchText, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-        }
-        
-        StateHasChanged();
-    }
-    
-    protected override async Task OnInitializedAsync()
-    {
-        Token = await StorageService.GetItemAsync("jwtToken");
-        if (Token is null or FilterOperator.String.Empty)
-        {
-            NavigationManager.NavigateTo("/");
-        }
-
-        try
-        {
-            var request = new NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request
-            {
-                Token = this.Token,
-                PageNumber = this.PageNumber
-            };
-            
-            var response = await HandleGetAllRequest.Handle(request, new CancellationToken());
-            
-            if (response.IsSuccess)
-            {
-                _amountOfNotes = response.Data.Notes.Count;
-                _notes = response.Data.Notes;
-            }
-            else
-            {
-                NavigationManager.NavigateTo("/");
-            }
-            FilteredNotes = new List<Note>(_notes);
-            
-        }
-        catch (Exception e)
-        {
-            // NavigationManager.NavigateTo("/");
-            Console.WriteLine($"debug: {e}");
-        }
-    }
-    
-    private void ToggleDrawer()
-    {
-        _open = !_open;
-    }
-    
-    private void HandleData(Note data)
-    {
-        ReceivedNote = data;
-        StateHasChanged();
-    }
-
-    private void UpdateNoteList(NoteUpdate note)
-    {
-        var index = _notes.FindIndex(n => n.Id == note.Id);
-        _notes[index].SetTitle(note.Title);       
-        _notes[index].SetBody(note.Body);
-        StateHasChanged();
-    }
-
-    private void SetAmountNotes(int amount)
-    {
-        _amountOfNotes = amount;
-        StateHasChanged();
-    }
-
-    private async void CreateNote()
-    {
-        var createRequest = new NoteApp.Web.Contexts.NoteContext.UseCases.Create.Request
-        {
-            Title = "Nova nota",
-            Body = " ",
-            Token = Token
-        };
-        var response = await HandleCreateRequest.Handle(createRequest, new CancellationToken());
-    
-        if (response.IsSuccess)
-        {
-            var note = new Note(response.Data.Title, response.Data.Body, new Guid(response.Data.UserId));
-            note.CreatedAt = response.Data.CreatedAt;
-            note.SetId(new Guid(response.Data.Id));
-            
-            _notes.Insert(0, note); 
-            _amountOfNotes = _notes.Count;
-            FilteredNotes = _notes;
-            StateHasChanged();
-        }
-        
-    }
-
-    private async void LoadNotes()
-    {
-        this.PageNumber++;
-        var request = new NoteApp.Web.Contexts.NoteContext.UseCases.GetAll.Request
-        {
-            Token = this.Token,
-            PageNumber = this.PageNumber
-        };
-            
-        var response = await HandleGetAllRequest.Handle(request, new CancellationToken());
-        
-        if (response.IsSuccess)
-        {
-            _notes.AddRange(response.Data.Notes);
-            _amountOfNotes = _notes.Count;
-            FilteredNotes = _notes;
-            StateHasChanged();
-        }
-    }
-}
