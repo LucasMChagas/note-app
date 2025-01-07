@@ -23,7 +23,6 @@ public partial class CreatePage : ComponentBase
     {
         try
         {
-            Snackbar.Add("chamou!");
             var result = await HandleRequest.Handle(InputModel, new CancellationToken());
             if (result.IsSuccess)
             {

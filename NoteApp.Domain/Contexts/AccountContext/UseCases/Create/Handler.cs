@@ -49,6 +49,8 @@ public class Handler : IRequestHandler<Request, Response>
             email = new Email(request.Email);
             password = new Password(request.Password);
             user = new User(request.Name, email, password);
+            
+            user.Email.Verification.Verify(user.Email.Verification.Code);
         }
         catch (Exception ex)
         {
