@@ -32,6 +32,12 @@
 
   <ItemGroup>
     <Compile Remove="Components\Contexts\SharedContext\**" />
+    <Compile Update="Components\Contexts\NotesContext\NoteCard.cs">
+      <DependentUpon>NoteCard.razor</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\Contexts\NotesContext\Notes.cs">
+      <DependentUpon>Notes.razor</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

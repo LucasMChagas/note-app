@@ -70,6 +70,6 @@ public class Handler : IRequestHandler<Request, Response>
 
         return new Response(
             "Nota criada com sucesso!",
-            new ResponseData(note.Title, note.Body, note.UserId.ToString()));
+            new ResponseData(note.Title, note.Body, note.UserId.ToString(), note.CreatedAt, note.Id.ToString()));
     }
 }
